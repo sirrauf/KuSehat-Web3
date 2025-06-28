@@ -1,6 +1,13 @@
 # KuSehat Web
 KuSehat adalah website inovasi teknologi kesehatan menggunakan teknologi modern yaitu AI Chat GPT, Machine Learning,dan Object Real-time Detection.
 
+Feature:
+1. Daftar akun pengguna/daftar pasien.
+2. Masuk ke akun pengguna/pasien kedalam dashboard.
+3. Top up saldo koin Crypto untuk menggunakan fitur deteksi penyakit real-time dan deteksi penyakit upload gambar.
+4. Deteksi Penyakit Real-time melalui kamera dan akan menghasilkan nama penyakit,deskripsi penyakit,cara penyembuhan dan obat.
+5. Deteksi penyakit melalui upload gambar dan akan menghasilkan nama penyakit,deskripsi penyakit,cara penyembuhan dan obat.
+
 ![Tampilan KuSehat]()
 
 [Live Website KuSehat]()
