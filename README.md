@@ -13,9 +13,9 @@ KuSehat adalah website inovasi teknologi kesehatan menggunakan teknologi modern 
 5. Setelah itu,ketik di Command prompt didalam folder project: activate.bat
 6. Ketika Virtual Enviroment Machine sudah aktif,ketik di Command Prompt: cd.. sebanyak 2 kali.
 7. Kemudian install library Python dalam requirement.txt,ketik perintah di Command prompt dalam folder project: pip install -r requirement.txt
-4 [Download Docker](https://www.docker.com/products/docker-desktop/)
-8. Install dan Buka Docker kemudian jalankan file DOCKERFILE didalam Docker.
-9. Tanpa Docker: ketik flask run
+8. [Download Docker](https://www.docker.com/products/docker-desktop/)
+9. Install dan Buka Docker kemudian jalankan file DOCKERFILE didalam Docker.
+10. Tanpa Docker: ketik flask run
 
 
 # Ada kendala? hubungi kontak dibawah ini:
