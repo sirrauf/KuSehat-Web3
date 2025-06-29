@@ -3,30 +3,25 @@ import base64
 import uuid
 import cv2
 import numpy as np
-import tensorflow as tf
 from flask import Flask, render_template, request
 from openai import OpenAI
 from werkzeug.utils import secure_filename
+from keras.models import load_model  # Ganti dari TFLite ke Keras
+
 from modelsdb import db, User, Checklist, Item
+
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
 # GPT via OpenRouter
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
-    api_key="<OPENROUTER_API_KEY>",  # Ganti dengan API key OpenRouter Anda
+    api_key="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",
 )
 
-# Load TFLite Model
-interpreter = tf.lite.Interpreter(model_path="model/model.tflite")
-interpreter.allocate_tensors()
-input_details = interpreter.get_input_details()
-output_details = interpreter.get_output_details()
-
-# Load Labels
-with open("model/labels.txt", "r") as f:
-    labels = [line.strip() for line in f.readlines()]
-
+# Load Keras Model
+model = load_model("model/keras_Model.h5", compile=False)
+class_names = open("model/labels.txt", "r").readlines()
 
 # 🔹 Fungsi GPT dengan Prompt Otomatis
 def get_gpt_diagnosis(disease_name):
@@ -34,10 +29,10 @@ def get_gpt_diagnosis(disease_name):
         f"Tolong jelaskan informasi tentang penyakit berikut ini:\n\n"
         f"Nama penyakit: {disease_name}\n\n"
         f"Saya ingin tahu:\n"
-        f"- Apa itu penyakit ini?\n"
+        f"- Apa nama penyakit ini?\n"
         f"- Bagaimana gejala dan penyebabnya?\n"
         f"- Bagaimana cara penyembuhannya?\n"
-        f"- Apa saja obat atau salep yang umum digunakan untuk penyakit ini?\n"
+        f"- Apa saja obat yang akan digunakan untuk penyakit ini?\n"
         f"Jelaskan dengan bahasa yang mudah dipahami masyarakat awam."
     )
 
@@ -48,25 +43,26 @@ def get_gpt_diagnosis(disease_name):
             "X-Title": "AI Deteksi Penyakit Otomatis"
         },
         messages=[
-            {"role": "system", "content": "Kamu adalah dokter AI yang memberikan informasi penyakit secara akurat dan mudah dipahami."},
+            {"role": "system", "content": "Kamu adalah asisten dokter specialis dan dokter umum berpengalaman selama 10 tahun professional yang sangat pintar bisa menjelaskan penyakit untuk masyarakat mengetahui penyakit secara akurat dan mudah dipahami, mohon menggunakan bahasa dalam dunia medis yang mudah dimengerti masyarakat awam."},
             {"role": "user", "content": prompt}
         ]
     )
     return response.choices[0].message.content
 
 
-# 🔹 Fungsi Prediksi TFLite
-def predict_tflite(image_np):
-    image = cv2.resize(image_np, (224, 224))  # Sesuaikan dengan ukuran model
-    input_data = np.expand_dims(image, axis=0).astype(np.float32) / 255.0
-    interpreter.set_tensor(input_details[0]['index'], input_data)
-    interpreter.invoke()
-    output_data = interpreter.get_tensor(output_details[0]['index'])
-    pred_index = np.argmax(output_data)
-    return labels[pred_index], float(output_data[0][pred_index])
+# 🔹 Fungsi Prediksi menggunakan Keras
+def predict_keras(image_np):
+    image = cv2.resize(image_np, (224, 224), interpolation=cv2.INTER_AREA)
+    image = np.asarray(image, dtype=np.float32).reshape(1, 224, 224, 3)
+    image = (image / 127.5) - 1  # Normalisasi
+    prediction = model.predict(image)
+    index = np.argmax(prediction)
+    class_name = class_names[index].strip()
+    confidence_score = float(prediction[0][index])
+    return class_name, confidence_score
 
 
-# 🔹 Fungsi Kamera (OpenCV)
+# 🔹 Fungsi Kamera
 def detect_disease_with_camera():
     cam = cv2.VideoCapture(0)
     if not cam.isOpened():
@@ -82,7 +78,7 @@ def detect_disease_with_camera():
     image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     cv2.imwrite(image_path, frame)
 
-    predicted_label, confidence = predict_tflite(frame)
+    predicted_label, confidence = predict_keras(frame)
     gpt_info = get_gpt_diagnosis(predicted_label)
 
     result = (
@@ -93,7 +89,7 @@ def detect_disease_with_camera():
     return result, image_path
 
 
-# 🔹 Fungsi Upload Gambar (tanpa TFLite, hanya GPT)
+# 🔹 Fungsi Upload Gambar
 def detect_disease_with_upload(image_path):
     with open(image_path, "rb") as img_file:
         b64_image = base64.b64encode(img_file.read()).decode("utf-8")
@@ -102,8 +98,8 @@ def detect_disease_with_upload(image_path):
         "Saya mengunggah gambar penyakit kulit. Tolong bantu identifikasi dan jawab secara detail:\n"
         "- Nama penyakit\n"
         "- Deskripsi penyakit\n"
-        - "Cara penyembuhan\n"
-        "- Nama obat yang umum digunakan\n\n"
+        "- Cara penyembuhan\n"
+        "- Nama obat yang akan digunakan\n\n"
         "Berikan jawaban dengan bahasa yang mudah dimengerti.\n"
         f"Gambar base64:\n{b64_image}"
     )
@@ -111,22 +107,24 @@ def detect_disease_with_upload(image_path):
     response = client.chat.completions.create(
         model="openai/gpt-4o",
         extra_headers={
-            "HTTP-Referer": "https://yourdomain.com",
+            "HTTP-Referer": "https://kusehatweb3.kusehat.co.id",
             "X-Title": "AI Upload Gambar Penyakit"
         },
         messages=[
-            {"role": "system", "content": "Kamu adalah asisten dokter AI yang sangat pintar dan menjelaskan penyakit dengan bahasa awam."},
+            {"role": "system", "content": "Kamu adalah asisten dokter specialis dan dokter umum berpengalaman selama 10 tahun professional yang sangat pintar bisa menjelaskan penyakit untuk masyarakat mengetahui penyakit secara akurat dan mudah dipahami, mohon menggunakan bahasa dalam dunia medis yang mudah dimengerti masyarakat awam."},
             {"role": "user", "content": prompt}
         ]
     )
     return response.choices[0].message.content
 
-# Route Halaman Beranda atau Halaman Home 
+
+# 🔹 Halaman Utama
 @app.route("/")
 def home():
-    render_template("index.html")
-    
-# ROUTE Dashboard User
+    return render_template("index.html")
+
+
+# 🔹 Dashboard User
 @app.route("/dashboarduser", methods=["GET", "POST"])
 def dashboarduser():
     diagnosis = ""
@@ -150,6 +148,7 @@ def dashboarduser():
             diagnosis, image_path = detect_disease_with_camera()
 
     return render_template("index.html", diagnosis=diagnosis, image_path=image_path)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
