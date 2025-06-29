@@ -1,0 +1,7 @@
+0  Nama penyakit: Kanker Payudara
+1  Nama penyakit:  Raja Singa
+2  Nama penyakit:  Sariawan
+3  Nama penyakit: Cacar
+4 Nama penyakit: Bisul
+5 Nama penyakit: Keloids
+6  Nama penyakit:  Panu
