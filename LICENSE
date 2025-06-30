@@ -1,201 +1,202 @@
-                                 Lisensi Apache
-                           Versi 2.0, Januari 2004
-                        http://www.apache.org/lisensi/
 
-   SYARAT DAN KETENTUAN PENGGUNAAN, REPRODUKSI, DAN DISTRIBUSI
+                                 Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
 
-   1. Definisi.
+   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
-      “Lisensi” berarti syarat dan ketentuan untuk penggunaan, reproduksi,
-      dan distribusi sebagaimana didefinisikan dalam Bagian 1 hingga 9 dokumen ini.
+   1. Definitions.
 
-      “Pemberi Lisensi” berarti pemilik hak cipta atau badan yang diberi wewenang oleh
-      pemilik hak cipta yang memberikan Lisensi.
+      "License" shall mean the terms and conditions for use, reproduction,
+      and distribution as defined by Sections 1 through 9 of this document.
 
-      “Badan Hukum” berarti gabungan dari badan hukum yang bertindak dan semua
-      entitas lain yang mengendalikan, dikendalikan oleh, atau berada di bawah kendali bersama
-      kontrol dengan entitas tersebut. Untuk tujuan definisi ini,
-      “pengendalian” berarti (i) kekuasaan, baik langsung maupun tidak langsung, untuk menyebabkan
-      pengarahan atau pengelolaan entitas tersebut, baik melalui kontrak atau
-      dengan cara lain, atau (ii) kepemilikan lima puluh persen (50%) atau lebih dari
-      saham yang beredar, atau (iii) kepemilikan manfaat atas entitas tersebut.
+      "Licensor" shall mean the copyright owner or entity authorized by
+      the copyright owner that is granting the License.
 
-      “Anda” (atau “Milik Anda”) berarti individu atau Badan Hukum
-      menjalankan izin yang diberikan oleh Lisensi ini.
+      "Legal Entity" shall mean the union of the acting entity and all
+      other entities that control, are controlled by, or are under common
+      control with that entity. For the purposes of this definition,
+      "control" means (i) the power, direct or indirect, to cause the
+      direction or management of such entity, whether by contract or
+      otherwise, or (ii) ownership of fifty percent (50%) or more of the
+      outstanding shares, or (iii) beneficial ownership of such entity.
 
-      Formulir “Sumber” berarti formulir yang disukai untuk melakukan modifikasi,
-      termasuk namun tidak terbatas pada kode sumber perangkat lunak, dokumentasi
-      sumber, dan file konfigurasi.
+      "You" (or "Your") shall mean an individual or Legal Entity
+      exercising permissions granted by this License.
 
-      Bentuk “Objek” berarti bentuk apapun yang dihasilkan dari proses mekanis
-      transformasi atau penerjemahan bentuk Sumber, termasuk tetapi tidak terbatas pada:
-      tidak terbatas pada kode objek yang dikompilasi, dokumentasi yang dihasilkan,
-      dan konversi ke jenis media lainnya.
+      "Source" form shall mean the preferred form for making modifications,
+      including but not limited to software source code, documentation
+      source, and configuration files.
 
-      “Karya” berarti karya cipta, baik dalam Sumber atau
-      Bentuk objek, disediakan berdasarkan Lisensi, seperti yang ditunjukkan oleh
-      pemberitahuan hak cipta yang disertakan atau dilampirkan pada karya tersebut
-      (contoh disediakan dalam Lampiran di bawah).
+      "Object" form shall mean any form resulting from mechanical
+      transformation or translation of a Source form, including but
+      not limited to compiled object code, generated documentation,
+      and conversions to other media types.
 
-      “Karya Turunan” berarti setiap karya, baik dalam bentuk Sumber atau Objek
-      bentuk yang didasarkan pada (atau berasal dari) Karya dan untuk itu
-      revisi editorial, anotasi, elaborasi, atau modifikasi lainnya
-      mewakili, secara keseluruhan, sebuah karya asli dari penulis. Untuk tujuan tersebut
-      dari Lisensi ini, Karya Turunan tidak termasuk karya yang tetap
-      dapat dipisahkan dari, atau hanya menghubungkan (atau mengikat berdasarkan nama) ke antarmuka,
-      Karya dan Karya Turunannya.
+      "Work" shall mean the work of authorship, whether in Source or
+      Object form, made available under the License, as indicated by a
+      copyright notice that is included in or attached to the work
+      (an example is provided in the Appendix below).
 
-      “Kontribusi” berarti setiap karya kepenulisan, termasuk
-      versi asli dari Karya dan segala modifikasi atau penambahannya
-      terhadap Karya tersebut atau Karya Turunannya, yang secara sengaja
-      diserahkan kepada Pemberi Lisensi untuk dimasukkan ke dalam Karya oleh pemilik hak cipta
-      atau oleh orang pribadi atau Badan Hukum yang diberi kuasa untuk menyampaikan atas nama
-      pemilik hak cipta. Untuk tujuan definisi ini, "dikirimkan"
-      berarti segala bentuk komunikasi elektronik, lisan, atau tertulis yang dikirim
-      kepada Pemberi Lisensi atau perwakilannya, termasuk namun tidak terbatas pada
-      komunikasi pada milis elektronik, sistem kontrol kode sumber,
-      dan sistem pelacakan masalah yang dikelola oleh, atau atas nama,
-      Pemberi Lisensi untuk tujuan mendiskusikan dan meningkatkan Karya, tetapi
-      tidak termasuk komunikasi yang ditandai dengan jelas atau sebaliknya
-      ditetapkan secara tertulis oleh pemilik hak cipta sebagai "Bukan Kontribusi."
+      "Derivative Works" shall mean any work, whether in Source or Object
+      form, that is based on (or derived from) the Work and for which the
+      editorial revisions, annotations, elaborations, or other modifications
+      represent, as a whole, an original work of authorship. For the purposes
+      of this License, Derivative Works shall not include works that remain
+      separable from, or merely link (or bind by name) to the interfaces of,
+      the Work and Derivative Works thereof.
 
-      “Kontributor” berarti Pemberi Lisensi dan setiap individu atau Badan Hukum
-      atas nama siapa Kontribusi telah diterima oleh Pemberi Lisensi dan
-      selanjutnya dimasukkan ke dalam Karya.
+      "Contribution" shall mean any work of authorship, including
+      the original version of the Work and any modifications or additions
+      to that Work or Derivative Works thereof, that is intentionally
+      submitted to Licensor for inclusion in the Work by the copyright owner
+      or by an individual or Legal Entity authorized to submit on behalf of
+      the copyright owner. For the purposes of this definition, "submitted"
+      means any form of electronic, verbal, or written communication sent
+      to the Licensor or its representatives, including but not limited to
+      communication on electronic mailing lists, source code control systems,
+      and issue tracking systems that are managed by, or on behalf of, the
+      Licensor for the purpose of discussing and improving the Work, but
+      excluding communication that is conspicuously marked or otherwise
+      designated in writing by the copyright owner as "Not a Contribution."
 
-   2. Pemberian Lisensi Hak Cipta. Tunduk pada syarat dan ketentuan
-      Lisensi ini, setiap Kontributor dengan ini memberikan kepada Anda hak abadi,
-      di seluruh dunia, non-eksklusif, tanpa biaya, bebas royalti, tidak dapat dibatalkan
-      lisensi hak cipta untuk memperbanyak, menyiapkan Karya Turunan dari,
-      menampilkan di depan umum, melakukan di depan umum, memberikan sublisensi, dan mendistribusikan
-      Karya dan Karya Turunannya dalam bentuk Sumber atau Objek.
+      "Contributor" shall mean Licensor and any individual or Legal Entity
+      on behalf of whom a Contribution has been received by Licensor and
+      subsequently incorporated within the Work.
 
-   3. Pemberian Lisensi Paten. Tunduk pada syarat dan ketentuan
-      Lisensi ini, setiap Kontributor dengan ini memberikan kepada Anda hak abadi,
-      di seluruh dunia, non-eksklusif, tanpa biaya, bebas royalti, tidak dapat dibatalkan
-      (kecuali yang dinyatakan dalam bagian ini) lisensi paten untuk membuat, membuat,
-      menggunakan, menawarkan untuk menjual, menjual, mengimpor, dan dengan cara lain mengalihkan Karya,
-      di mana lisensi tersebut hanya berlaku untuk klaim paten yang dapat dilisensikan
-      oleh Kontributor tersebut yang secara perlu dilanggar haknya
-      Kontribusi(s) sendiri atau gabungan dari Kontribusi(s) mereka
-      dengan Karya yang telah diserahkan Kontribusi tersebut. Jika Anda
-      mengajukan gugatan paten terhadap entitas mana pun (termasuk
-      gugatan silang atau gugatan balik dalam gugatan hukum) yang menyatakan bahwa Karya
-      atau Kontribusi yang dimasukkan ke dalam Karya merupakan kontribusi langsung
-      atau pelanggaran paten kontributor, maka lisensi paten apa pun
-      diberikan kepada Anda berdasarkan Lisensi ini untuk Pekerjaan tersebut akan berakhir
-      sejak tanggal gugatan tersebut diajukan.
+   2. Grant of Copyright License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      copyright license to reproduce, prepare Derivative Works of,
+      publicly display, publicly perform, sublicense, and distribute the
+      Work and such Derivative Works in Source or Object form.
 
-   4. Distribusi ulang. Anda dapat memperbanyak dan mendistribusikan salinan
-      Karya atau Karya Turunannya dalam media apa pun, dengan atau tanpa
-      modifikasi, dan dalam bentuk Sumber atau Objek, dengan ketentuan bahwa Anda
-      memenuhi kondisi berikut:
+   3. Grant of Patent License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      (except as stated in this section) patent license to make, have made,
+      use, offer to sell, sell, import, and otherwise transfer the Work,
+      where such license applies only to those patent claims licensable
+      by such Contributor that are necessarily infringed by their
+      Contribution(s) alone or by combination of their Contribution(s)
+      with the Work to which such Contribution(s) was submitted. If You
+      institute patent litigation against any entity (including a
+      cross-claim or counterclaim in a lawsuit) alleging that the Work
+      or a Contribution incorporated within the Work constitutes direct
+      or contributory patent infringement, then any patent licenses
+      granted to You under this License for that Work shall terminate
+      as of the date such litigation is filed.
 
-      (a) Anda harus memberikan kepada penerima lain dari Karya atau
-          Karya Turunan salinan Lisensi ini; dan
+   4. Redistribution. You may reproduce and distribute copies of the
+      Work or Derivative Works thereof in any medium, with or without
+      modifications, and in Source or Object form, provided that You
+      meet the following conditions:
 
-      (b) Anda harus membuat setiap file yang dimodifikasi untuk membawa pemberitahuan yang menonjol
-          menyatakan bahwa Anda mengubah file tersebut; dan
+      (a) You must give any other recipients of the Work or
+          Derivative Works a copy of this License; and
 
-      (c) Anda harus menyimpan, dalam bentuk Sumber dari setiap Karya Turunan
-          bahwa Anda mendistribusikan, semua hak cipta, paten, merek dagang, dan
-          pemberitahuan atribusi dari formulir Sumber Karya,
-          tidak termasuk pemberitahuan yang tidak berkaitan dengan bagian mana pun dari
-          Karya Turunan; dan
+      (b) You must cause any modified files to carry prominent notices
+          stating that You changed the files; and
 
-      (d) Jika Karya menyertakan file teks “NOTICE” sebagai bagian dari
-          distribusi, maka setiap Karya Turunan yang Anda distribusikan harus
-          sertakan salinan pemberitahuan atribusi yang dapat dibaca
-          dalam berkas PEMBERITAHUAN tersebut, tidak termasuk pemberitahuan yang tidak
-          berkaitan dengan bagian mana pun dari Karya Turunan, setidaknya dalam satu
-          dari tempat-tempat berikut: dalam file teks PEMBERITAHUAN yang didistribusikan
-          sebagai bagian dari Karya Turunan; dalam formulir Sumber atau
-          dokumentasi, jika diberikan bersama dengan Karya Turunan; atau,
-          dalam tampilan yang dihasilkan oleh Karya Turunan, jika dan
-          di mana pun pemberitahuan pihak ketiga tersebut biasanya muncul. Isinya
-          dari file NOTICE hanya untuk tujuan informasi dan
-          jangan mengubah Lisensi. Anda dapat menambahkan atribusi Anda sendiri
-          pemberitahuan dalam Karya Turunan yang Anda distribusikan, bersama dengan
-          atau sebagai tambahan pada teks PEMBERITAHUAN dari Karya, dengan ketentuan
-          bahwa pemberitahuan atribusi tambahan tersebut tidak dapat ditafsirkan
-          sebagai modifikasi Lisensi.
+      (c) You must retain, in the Source form of any Derivative Works
+          that You distribute, all copyright, patent, trademark, and
+          attribution notices from the Source form of the Work,
+          excluding those notices that do not pertain to any part of
+          the Derivative Works; and
 
-      Anda dapat menambahkan pernyataan hak cipta Anda sendiri ke modifikasi Anda dan
-      dapat memberikan ketentuan dan persyaratan lisensi tambahan atau berbeda
-      untuk penggunaan, reproduksi, atau distribusi modifikasi Anda, atau
-      untuk setiap Karya Turunan tersebut secara keseluruhan, dengan ketentuan penggunaan Anda,
-      reproduksi, dan distribusi Karya sesuai dengan ketentuan
-      ketentuan yang tercantum dalam Lisensi ini.
+      (d) If the Work includes a "NOTICE" text file as part of its
+          distribution, then any Derivative Works that You distribute must
+          include a readable copy of the attribution notices contained
+          within such NOTICE file, excluding those notices that do not
+          pertain to any part of the Derivative Works, in at least one
+          of the following places: within a NOTICE text file distributed
+          as part of the Derivative Works; within the Source form or
+          documentation, if provided along with the Derivative Works; or,
+          within a display generated by the Derivative Works, if and
+          wherever such third-party notices normally appear. The contents
+          of the NOTICE file are for informational purposes only and
+          do not modify the License. You may add Your own attribution
+          notices within Derivative Works that You distribute, alongside
+          or as an addendum to the NOTICE text from the Work, provided
+          that such additional attribution notices cannot be construed
+          as modifying the License.
 
-   5. Pengiriman Kontribusi. Kecuali Anda secara tegas menyatakan sebaliknya,
-      Kontribusi apa pun yang secara sengaja diajukan untuk dimasukkan ke dalam Karya
-      oleh Anda kepada Pemberi Lisensi harus berdasarkan syarat dan ketentuan
-      Lisensi ini, tanpa syarat atau ketentuan tambahan apa pun.
-      Meskipun demikian, tidak ada hal dalam dokumen ini yang dapat menggantikan atau mengubah
-      Persyaratan perjanjian lisensi terpisah yang mungkin telah Anda tandatangani
-      dengan Pemberi Lisensi mengenai Kontribusi tersebut.
+      You may add Your own copyright statement to Your modifications and
+      may provide additional or different license terms and conditions
+      for use, reproduction, or distribution of Your modifications, or
+      for any such Derivative Works as a whole, provided Your use,
+      reproduction, and distribution of the Work otherwise complies with
+      the conditions stated in this License.
 
-   6. Merek Dagang. Lisensi ini tidak memberikan izin untuk menggunakan merek dagang.
-      nama, merek dagang, merek layanan, atau nama produk dari Pemberi Lisensi,
-      kecuali sebagaimana diperlukan untuk penggunaan yang wajar dan lazim dalam mendeskripsikan
-      asal Karya dan mereproduksi konten berkas PEMBERITAHUAN.
+   5. Submission of Contributions. Unless You explicitly state otherwise,
+      any Contribution intentionally submitted for inclusion in the Work
+      by You to the Licensor shall be under the terms and conditions of
+      this License, without any additional terms or conditions.
+      Notwithstanding the above, nothing herein shall supersede or modify
+      the terms of any separate license agreement you may have executed
+      with Licensor regarding such Contributions.
 
-   7. Penafian Garansi. Kecuali diwajibkan oleh hukum yang berlaku atau
-      disetujui secara tertulis, Pemberi Lisensi menyediakan Karya (dan masing-masing
-      Kontributor memberikan Kontribusinya) atas dasar "SEBAGAIMANA ADANYA",
-      TANPA JAMINAN ATAU KETENTUAN APAPUN, baik tersurat maupun
-      tersirat, termasuk, tanpa batasan, jaminan atau ketentuan apa pun
-      tentang HAK MILIK, TANPA PELANGGARAN, KEMAMPUAN DIPERDAGANGKAN, atau KESESUAIAN UNTUK
-      TUJUAN TERTENTU. Anda bertanggung jawab sepenuhnya untuk menentukan
-      kelayakan penggunaan atau pendistribusian ulang Karya dan menanggung segala
-      risiko yang terkait dengan pelaksanaan izin Anda berdasarkan Lisensi ini.
+   6. Trademarks. This License does not grant permission to use the trade
+      names, trademarks, service marks, or product names of the Licensor,
+      except as required for reasonable and customary use in describing the
+      origin of the Work and reproducing the content of the NOTICE file.
 
-   8. Batasan Tanggung Jawab. Dalam keadaan apa pun dan berdasarkan teori hukum apa pun,
-      baik dalam perbuatan melawan hukum (termasuk kelalaian), kontrak, atau lainnya,
-      kecuali jika diwajibkan oleh hukum yang berlaku (seperti disengaja dan sangat
-      tindakan lalai) atau disetujui secara tertulis, maka Kontributor mana pun harus
-      bertanggung jawab kepada Anda atas segala kerugian, termasuk kerugian langsung, tidak langsung, khusus,
-      kerugian insidental, atau konsekuensial apapun yang timbul sebagai akibat
-      hasil dari Lisensi ini atau dari penggunaan atau ketidakmampuan untuk menggunakan
-      Pekerjaan (termasuk namun tidak terbatas pada kerusakan karena hilangnya niat baik,
-      penghentian kerja, kegagalan atau malfungsi komputer, atau apa pun dan semua
-      kerusakan atau kerugian komersial lainnya), bahkan jika Kontributor tersebut
-      telah diberitahu tentang kemungkinan terjadinya kerusakan tersebut.
+   7. Disclaimer of Warranty. Unless required by applicable law or
+      agreed to in writing, Licensor provides the Work (and each
+      Contributor provides its Contributions) on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+      implied, including, without limitation, any warranties or conditions
+      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+      PARTICULAR PURPOSE. You are solely responsible for determining the
+      appropriateness of using or redistributing the Work and assume any
+      risks associated with Your exercise of permissions under this License.
 
-   9. Menerima Garansi atau Tanggung Jawab Tambahan. Saat mendistribusikan ulang
-      Karya atau Karya Turunannya, Anda dapat memilih untuk menawarkannya,
-      dan mengenakan biaya untuk penerimaan dukungan, garansi, ganti rugi,
-      atau kewajiban dan/atau hak lain yang konsisten dengan ini
-      Lisensi. Namun, dalam menerima kewajiban tersebut, Anda hanya dapat bertindak
-      Atas nama Anda sendiri dan atas tanggung jawab Anda sendiri, bukan atas nama Anda
-      Kontributor lainnya, dan hanya jika Anda setuju untuk mengganti kerugian,
-      membela, dan membebaskan setiap Kontributor dari segala tanggung jawab
-      yang diderita oleh, atau klaim yang diajukan terhadap, Kontributor tersebut dengan alasan
-      penerimaan Anda terhadap jaminan atau tanggung jawab tambahan tersebut.
+   8. Limitation of Liability. In no event and under no legal theory,
+      whether in tort (including negligence), contract, or otherwise,
+      unless required by applicable law (such as deliberate and grossly
+      negligent acts) or agreed to in writing, shall any Contributor be
+      liable to You for damages, including any direct, indirect, special,
+      incidental, or consequential damages of any character arising as a
+      result of this License or out of the use or inability to use the
+      Work (including but not limited to damages for loss of goodwill,
+      work stoppage, computer failure or malfunction, or any and all
+      other commercial damages or losses), even if such Contributor
+      has been advised of the possibility of such damages.
 
-   AKHIR SYARAT DAN KETENTUAN
+   9. Accepting Warranty or Additional Liability. While redistributing
+      the Work or Derivative Works thereof, You may choose to offer,
+      and charge a fee for, acceptance of support, warranty, indemnity,
+      or other liability obligations and/or rights consistent with this
+      License. However, in accepting such obligations, You may act only
+      on Your own behalf and on Your sole responsibility, not on behalf
+      of any other Contributor, and only if You agree to indemnify,
+      defend, and hold each Contributor harmless for any liability
+      incurred by, or claims asserted against, such Contributor by reason
+      of your accepting any such warranty or additional liability.
 
-   LAMPIRAN: Cara menerapkan Lisensi Apache pada pekerjaan Anda.
+   END OF TERMS AND CONDITIONS
 
-      Untuk menerapkan Lisensi Apache pada pekerjaan Anda, lampirkan yang berikut ini
-      pemberitahuan boilerplate, dengan bidang yang diapit tanda kurung "[]"
-      diganti dengan informasi pengenal Anda sendiri. (Jangan sertakan
-      (dalam tanda kurung!) Teks harus dilampirkan pada tempat yang sesuai
-      sintaks komentar untuk format file. Kami juga merekomendasikan bahwa
-      nama file atau kelas dan deskripsi tujuannya harus disertakan pada
-      "halaman cetak" yang sama dengan pemberitahuan hak cipta untuk memudahkan
-      identifikasi dalam arsip pihak ketiga.
+   APPENDIX: How to apply the Apache License to your work.
 
-   Hak Cipta [yyyy] [nama pemilik hak cipta]
+      To apply the Apache License to your work, attach the following
+      boilerplate notice, with the fields enclosed by brackets "[]"
+      replaced with your own identifying information. (Don't include
+      the brackets!)  The text should be enclosed in the appropriate
+      comment syntax for the file format. We also recommend that a
+      file or class name and description of purpose be included on the
+      same "printed page" as the copyright notice for easier
+      identification within third-party archives.
 
-   Dilisensikan berdasarkan Lisensi Apache, Versi 2.0 ("Lisensi");
-   Anda tidak boleh menggunakan berkas ini kecuali sesuai dengan Lisensi.
-   Anda dapat memperoleh salinan Lisensi di
+   Copyright [yyyy] [name of copyright owner]
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
-   Kecuali jika diwajibkan oleh hukum yang berlaku atau disetujui secara tertulis, perangkat lunak
-   didistribusikan berdasarkan Lisensi didistribusikan atas dasar "SEBAGAIMANA ADANYA",
-   TANPA JAMINAN ATAU KETENTUAN APAPUN, baik tersurat maupun tersirat.
-   Lihat Lisensi untuk bahasa spesifik yang mengatur izin dan
-   batasan berdasarkan Lisensi.
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
