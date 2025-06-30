@@ -4,24 +4,21 @@ import uuid
 import cv2
 import numpy as np
 from flask import Flask, render_template, request
-import openai
 from werkzeug.utils import secure_filename
 from keras.models import load_model  # Ganti dari TFLite ke Keras
 
+# Ganti OpenAI dengan gpt4free
+import g4f
+from g4f import ChatCompletion, Provider
+
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
-
-# Konfigurasi OpenAI (via OpenRouter)
-openai.api_key = "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"
-openai.api_base = "https://openrouter.ai/api/v1"
-openai.api_type = "open_ai"
-openai.api_version = None
 
 # Load Keras Model
 model = load_model("model/keras_Model.h5", compile=False)
 class_names = open("model/labels.txt", "r").readlines()
 
-# 🔹 Fungsi GPT dengan Prompt Otomatis
+# 🔹 Fungsi GPT dengan Prompt Otomatis (pakai gpt4free)
 def get_gpt_diagnosis(disease_name):
     prompt = (
         f"Tolong jelaskan informasi tentang penyakit berikut ini:\n\n"
@@ -34,18 +31,15 @@ def get_gpt_diagnosis(disease_name):
         f"Jelaskan dengan bahasa yang mudah dipahami masyarakat awam."
     )
 
-    response = openai.ChatCompletion.create(
-        model="openai/gpt-4o",
+    response = ChatCompletion.create(
+        model=g4f.models.gpt_4,
+        provider=Provider.You,
         messages=[
             {"role": "system", "content": "Kamu adalah dokter AI yang memberikan informasi penyakit secara akurat dan mudah dipahami."},
             {"role": "user", "content": prompt}
-        ],
-        headers={
-            "HTTP-Referer": "https://kusehatweb3.kusehat.co.id",
-            "X-Title": "AI Deteksi Penyakit Otomatis"
-        }
+        ]
     )
-    return response['choices'][0]['message']['content']
+    return response
 
 # 🔹 Fungsi Prediksi menggunakan Keras
 def predict_keras(image_np):
@@ -80,7 +74,7 @@ def detect_disease_with_camera():
     result = (
         f"📸 Deteksi Kamera: <b>{predicted_label}</b><br>"
         f"🧪 Kepercayaan Model: {confidence:.2%}<br><br>"
-        f"🧠 GPT-4o Menjawab:<br>{gpt_info}"
+        f"🧠 GPT-4free Menjawab:<br>{gpt_info}"
     )
     return result, image_path
 
@@ -99,20 +93,17 @@ def detect_disease_with_upload(image_path):
         f"Gambar base64:\n{b64_image}"
     )
 
-    response = openai.ChatCompletion.create(
-        model="openai/gpt-4o",
+    response = ChatCompletion.create(
+        model=g4f.models.gpt_4,
+        provider=Provider.You,
         messages=[
             {"role": "system", "content": "Kamu adalah asisten dokter AI yang sangat pintar dan menjelaskan penyakit dengan bahasa awam."},
             {"role": "user", "content": prompt}
-        ],
-        headers={
-            "HTTP-Referer": "https://kusehatweb3.kusehat.co.id",
-            "X-Title": "AI Upload Gambar Penyakit"
-        }
+        ]
     )
-    return response['choices'][0]['message']['content']
+    return response
 
-# 🔹 Halaman beranda/home sementara
+# 🔹 Halaman beranda/home
 @app.route("/", methods=["GET", "POST"])
 def home():
     diagnosis = ""
@@ -130,7 +121,7 @@ def home():
                 image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(image_path)
                 gpt_result = detect_disease_with_upload(image_path)
-                diagnosis = f"🧠 GPT-4o Analisa Upload Gambar:<br>{gpt_result}"
+                diagnosis = f"🧠 GPT-4free Analisa Upload Gambar:<br>{gpt_result}"
 
         elif method == "camera":
             diagnosis, image_path = detect_disease_with_camera()
