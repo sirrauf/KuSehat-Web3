@@ -29,10 +29,10 @@ def get_gpt_diagnosis(disease_name):
         f"Tolong jelaskan informasi tentang penyakit berikut ini:\n\n"
         f"Nama penyakit: {disease_name}\n\n"
         f"Saya ingin tahu:\n"
-        f"- Apa nama penyakit ini?\n"
+        f"- Apa itu penyakit ini?\n"
         f"- Bagaimana gejala dan penyebabnya?\n"
         f"- Bagaimana cara penyembuhannya?\n"
-        f"- Apa saja obat yang akan digunakan untuk penyakit ini?\n"
+        f"- Apa saja obat atau salep yang umum digunakan untuk penyakit ini?\n"
         f"Jelaskan dengan bahasa yang mudah dipahami masyarakat awam."
     )
 
@@ -43,7 +43,7 @@ def get_gpt_diagnosis(disease_name):
             "X-Title": "AI Deteksi Penyakit Otomatis"
         },
         messages=[
-            {"role": "system", "content": "Kamu adalah asisten dokter specialis dan dokter umum berpengalaman selama 10 tahun professional yang sangat pintar bisa menjelaskan penyakit untuk masyarakat mengetahui penyakit secara akurat dan mudah dipahami, mohon menggunakan bahasa dalam dunia medis yang mudah dimengerti masyarakat awam."},
+            {"role": "system", "content": "Kamu adalah dokter AI yang memberikan informasi penyakit secara akurat dan mudah dipahami."},
             {"role": "user", "content": prompt}
         ]
     )
@@ -99,7 +99,7 @@ def detect_disease_with_upload(image_path):
         "- Nama penyakit\n"
         "- Deskripsi penyakit\n"
         "- Cara penyembuhan\n"
-        "- Nama obat yang akan digunakan\n\n"
+        "- Nama obat yang umum digunakan\n\n"
         "Berikan jawaban dengan bahasa yang mudah dimengerti.\n"
         f"Gambar base64:\n{b64_image}"
     )
@@ -107,11 +107,11 @@ def detect_disease_with_upload(image_path):
     response = client.chat.completions.create(
         model="openai/gpt-4o",
         extra_headers={
-            "HTTP-Referer": "https://kusehatweb3.kusehat.co.id",
+            "HTTP-Referer": "https://yourdomain.com",
             "X-Title": "AI Upload Gambar Penyakit"
         },
         messages=[
-            {"role": "system", "content": "Kamu adalah asisten dokter specialis dan dokter umum berpengalaman selama 10 tahun professional yang sangat pintar bisa menjelaskan penyakit untuk masyarakat mengetahui penyakit secara akurat dan mudah dipahami, mohon menggunakan bahasa dalam dunia medis yang mudah dimengerti masyarakat awam."},
+            {"role": "system", "content": "Kamu adalah asisten dokter AI yang sangat pintar dan menjelaskan penyakit dengan bahasa awam."},
             {"role": "user", "content": prompt}
         ]
     )
@@ -119,14 +119,14 @@ def detect_disease_with_upload(image_path):
 
 
 # 🔹 Halaman Utama
-@app.route("/")
-def home():
-    return render_template("index.html")
+#@app.route("/")
+#def home():
+ #   return render_template("index.html")
 
 
-# 🔹 Dashboard User
+# 🔹 Dashboard User / Sementara Halamaan Utama Beranda
 @app.route("/dashboarduser", methods=["GET", "POST"])
-def dashboarduser():
+def home():
     diagnosis = ""
     image_path = ""
 
