@@ -13,8 +13,8 @@ Feature:
 [Live Website KuSehat]()
 
 # Cara run server website di Lokal Laptop 
-1. [Download Python Versi 3.13.4](https://www.python.org/downloads/release/python-3134/)
-2. Install dan Setting Enviroment Variabel di path sistem, contoh path Python ditambahkan ke path sistem: C://Python313/Scripts,C://Python313/Lib,dan C://Python313
+1. [Download Python Versi 3.10.11]([https://www.python.org/downloads/release/python-3134/](https://www.python.org/downloads/release/python-31011/)
+2. Install dan Setting Enviroment Variabel di path sistem, contoh path Python ditambahkan ke path sistem: C://Python31011/Scripts,C://Python31011/Lib,dan C://Python31011
 3. Buat Virtual Enviroment Machine untuk menampung library Python yg akan diinstal: python -m venv kusehat-env
 4. Aktifkan Virtual Enviroment Machine,ketik di Command Prompt dalam folder project: cd kusehat-env/Scripts.
 5. Setelah itu,ketik di Command prompt didalam folder project: activate.bat
