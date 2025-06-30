@@ -8,7 +8,7 @@ from openai import OpenAI
 from werkzeug.utils import secure_filename
 from keras.models import load_model  # Ganti dari TFLite ke Keras
 
-from modelsdb import db, User, Checklist, Item
+
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
