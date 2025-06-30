@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Deteksi Penyakit Kulit</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            background-color: #fff;
+            margin: 40px auto;
+            padding: 30px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            margin-top: 20px;
+            text-align: center;
+        }
+        input[type="file"] {
+            padding: 8px;
+            margin-top: 10px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 30px;
+            background-color: #f1f1f1;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        img.preview {
+            max-width: 100%;
+            margin-top: 15px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Deteksi Penyakit Kulit</h1>
+
+        <form method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="method" value="upload">
+            <label for="image">Unggah Gambar:</label><br>
+            <input type="file" name="image" accept="image/*"><br>
+            <button type="submit">🖼️ Analisa Gambar</button>
+        </form>
+
+        <form method="POST" style="margin-top: 20px;">
+            <input type="hidden" name="method" value="camera">
+            <button type="submit">📷 Gunakan Kamera</button>
+        </form>
+
+        {% if diagnosis %}
+            <div class="result">
+                <h3>Hasil Diagnosis:</h3>
+                <p>{{ diagnosis|safe }}</p>
+                {% if image_path %}
+                    <img class="preview" src="{{ url_for('static', filename='uploads/' + image_path.split('/')[-1]) }}" alt="Hasil Gambar">
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
