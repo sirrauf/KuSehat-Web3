@@ -1,4 +1,7 @@
-flask
+Flask
+gunicorn
+pony
+PyMySQL
 opencv-python
 keras
 openai
