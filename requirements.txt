@@ -4,7 +4,7 @@ pony==0.7.16
 PyMySQL==1.1.0
 opencv-python==4.8.0.76
 keras==2.11.0
-openai==1.30.3
+openai==0.28.1
 flask-cors==3.0.10
 flask-jwt-extended==4.6.0
 tensorflow==2.11.0
