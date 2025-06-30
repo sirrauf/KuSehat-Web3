@@ -4,20 +4,18 @@ import uuid
 import cv2
 import numpy as np
 from flask import Flask, render_template, request
-from openai import OpenAI
+import openai
 from werkzeug.utils import secure_filename
 from keras.models import load_model  # Ganti dari TFLite ke Keras
-
-
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
-# GPT via OpenRouter
-client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key="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",
-)
+# Konfigurasi OpenAI (via OpenRouter)
+openai.api_key = "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"
+openai.api_base = "https://openrouter.ai/api/v1"
+openai.api_type = "open_ai"
+openai.api_version = None
 
 # Load Keras Model
 model = load_model("model/keras_Model.h5", compile=False)
@@ -36,19 +34,18 @@ def get_gpt_diagnosis(disease_name):
         f"Jelaskan dengan bahasa yang mudah dipahami masyarakat awam."
     )
 
-    response = client.chat.completions.create(
+    response = openai.ChatCompletion.create(
         model="openai/gpt-4o",
-        extra_headers={
-            "HTTP-Referer": "https://yourdomain.com",
-            "X-Title": "AI Deteksi Penyakit Otomatis"
-        },
         messages=[
             {"role": "system", "content": "Kamu adalah dokter AI yang memberikan informasi penyakit secara akurat dan mudah dipahami."},
             {"role": "user", "content": prompt}
-        ]
+        ],
+        headers={
+            "HTTP-Referer": "https://kusehatweb3.kusehat.co.id",
+            "X-Title": "AI Deteksi Penyakit Otomatis"
+        }
     )
-    return response.choices[0].message.content
-
+    return response['choices'][0]['message']['content']
 
 # 🔹 Fungsi Prediksi menggunakan Keras
 def predict_keras(image_np):
@@ -60,7 +57,6 @@ def predict_keras(image_np):
     class_name = class_names[index].strip()
     confidence_score = float(prediction[0][index])
     return class_name, confidence_score
-
 
 # 🔹 Fungsi Kamera
 def detect_disease_with_camera():
@@ -88,7 +84,6 @@ def detect_disease_with_camera():
     )
     return result, image_path
 
-
 # 🔹 Fungsi Upload Gambar
 def detect_disease_with_upload(image_path):
     with open(image_path, "rb") as img_file:
@@ -104,28 +99,21 @@ def detect_disease_with_upload(image_path):
         f"Gambar base64:\n{b64_image}"
     )
 
-    response = client.chat.completions.create(
+    response = openai.ChatCompletion.create(
         model="openai/gpt-4o",
-        extra_headers={
-            "HTTP-Referer": "https://yourdomain.com",
-            "X-Title": "AI Upload Gambar Penyakit"
-        },
         messages=[
             {"role": "system", "content": "Kamu adalah asisten dokter AI yang sangat pintar dan menjelaskan penyakit dengan bahasa awam."},
             {"role": "user", "content": prompt}
-        ]
+        ],
+        headers={
+            "HTTP-Referer": "https://kusehatweb3.kusehat.co.id",
+            "X-Title": "AI Upload Gambar Penyakit"
+        }
     )
-    return response.choices[0].message.content
+    return response['choices'][0]['message']['content']
 
-
-# 🔹 Halaman Utama
-#@app.route("/")
-#def home():
- #   return render_template("index.html")
-
-
-# 🔹 Dashboard User / Sementara Halamaan Utama Beranda
-@app.route("/dashboarduser", methods=["GET", "POST"])
+# 🔹 Halaman beranda/home sementara
+@app.route("/", methods=["GET", "POST"])
 def home():
     diagnosis = ""
     image_path = ""
@@ -148,7 +136,6 @@ def home():
             diagnosis, image_path = detect_disease_with_camera()
 
     return render_template("index.html", diagnosis=diagnosis, image_path=image_path)
-
 
 if __name__ == "__main__":
     app.run(debug=True)
