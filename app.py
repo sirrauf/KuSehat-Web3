@@ -32,7 +32,7 @@ def get_gpt_diagnosis(disease_name):
     )
 
     response = ChatCompletion.create(
-        model=g4f.models.gpt_4,
+        model=g4f.models.gpt_4o,
         provider=Provider.You,
         messages=[
             {"role": "system", "content": "Kamu adalah dokter AI yang memberikan informasi penyakit secara akurat dan mudah dipahami."},
@@ -94,7 +94,7 @@ def detect_disease_with_upload(image_path):
     )
 
     response = ChatCompletion.create(
-        model=g4f.models.gpt_4,
+        model=g4f.models.gpt_4o,
         provider=Provider.You,
         messages=[
             {"role": "system", "content": "Kamu adalah asisten dokter AI yang sangat pintar dan menjelaskan penyakit dengan bahasa awam."},
