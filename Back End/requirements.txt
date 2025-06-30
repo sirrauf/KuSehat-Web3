@@ -1,6 +1,0 @@
-flask
-opencv-python
-keras
-openai
-flask-cors
-flask-jwt-extended
