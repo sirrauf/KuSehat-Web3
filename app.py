@@ -9,7 +9,7 @@ from werkzeug.utils import secure_filename
 from keras.models import load_model
 
 # Konfigurasi API You.com (pakai endpoint ydc-index.io)
-YOU_API_KEY = "a0a7ea3c-70af-45b2-a1a3-13defad18b27-1RfxPyETU8N2v5f4r1d4elnD"
+YOU_API_KEY = "d1fa9a02-8da3-4000-9372-67feee10d40c<__>1RfxPyETU8N2v5f4r1d4elnD"
 YOU_API_URL = "https://api.ydc-index.io/search"
 
 app = Flask(__name__)
