@@ -38,7 +38,7 @@ def get_gpt_diagnosis(disease_name):
     try:
         response = ChatCompletion.create(
             model="deepseek-chat",
-            provider=Provider.DeepseekAPI,
+            provider=Provider.DeepSeekAPI,
             api_key='sk-7a2db1ceab3b4903b31a534efbec9aa1',
             messages=[
                 {"role": "system", "content": "Kamu adalah dokter spesialis kulit, kelamin, dan kanker payudara profesional berpengalaman selama 25 tahun."},
@@ -104,7 +104,7 @@ def detect_disease_with_upload(image_path):
     try:
         response = ChatCompletion.create(
             model="deepseek-chat",
-            provider=Provider.DeepseekAPI,
+            provider=Provider.DeepSeekAPI,
             api_key='sk-7a2db1ceab3b4903b31a534efbec9aa1',
             messages=[
                 {"role": "system", "content": "Kamu adalah dokter spesialis kulit, kelamin, dan kanker payudara profesional berpengalaman selama 25 tahun."},
