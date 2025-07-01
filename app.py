@@ -11,8 +11,8 @@ from keras.models import load_model
 import g4f
 from g4f import ChatCompletion, Provider
 
-# Simpan API Key DeepSeek Anda di sini
-DEEPSEEK_API_KEY = "sk-7a2db1ceab3b4903b31a534efbec9aa1"  # Ganti dengan API key Anda
+# API Key untuk DeepSeekAPI (❗ganti dengan milik Anda)
+DEEPSEEK_API_KEY = "YOUR_DEEPSEEK_API_KEY_HERE"
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
@@ -37,9 +37,9 @@ def get_gpt_diagnosis(disease_name):
 
     try:
         response = ChatCompletion.create(
-            model=g4f.models.deepseek_chat,
+            model="deepseek-chat",
             provider=Provider.DeepseekAPI,
-            api_key=DEEPSEEK_API_KEY,
+            api_key='sk-7a2db1ceab3b4903b31a534efbec9aa1',
             messages=[
                 {"role": "system", "content": "Kamu adalah dokter spesialis kulit, kelamin, dan kanker payudara profesional berpengalaman selama 25 tahun."},
                 {"role": "user", "content": prompt}
@@ -103,9 +103,9 @@ def detect_disease_with_upload(image_path):
 
     try:
         response = ChatCompletion.create(
-            model=g4f.models.deepseek_chat,
+            model="deepseek-chat",
             provider=Provider.DeepseekAPI,
-            api_key=DEEPSEEK_API_KEY,
+            api_key='sk-7a2db1ceab3b4903b31a534efbec9aa1',
             messages=[
                 {"role": "system", "content": "Kamu adalah dokter spesialis kulit, kelamin, dan kanker payudara profesional berpengalaman selama 25 tahun."},
                 {"role": "user", "content": prompt}
