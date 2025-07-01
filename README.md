@@ -9,10 +9,14 @@ Feature:
 5. Deteksi penyakit melalui upload gambar dan akan menghasilkan nama penyakit,deskripsi penyakit,cara penyembuhan dan obat.
 
 Demo Tampilan melalui Screenshot:
+
 ![Tampilan KuSehat]()
 
 Demo Live Website:
-[Live Website KuSehat ML](http://kusehatweb3.kusehat.co.id/)
+
+[Live Website KuSehat Web3](http://kusehatweb3.kusehat.co.id/)
+
+
 [Live Website KuSehat ML](http://kusehatml.kusehat.co.id/)
 
 # Cara run server website di Lokal Laptop 
