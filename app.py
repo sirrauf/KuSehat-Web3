@@ -8,9 +8,10 @@ from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
 from keras.models import load_model
 
-# Konfigurasi API You.com (pakai endpoint ydc-index.io)
-YOU_API_KEY = "d1fa9a02-8da3-4000-9372-67feee10d40c<__>1RfxPyETU8N2v5f4r1d4elnD"
-YOU_API_URL = "https://api.ydc-index.io/search"
+# Konfigurasi Gemini
+GEMINI_API_KEY = "AIzaSyDwniC_zbYaVpRWRGjGk9HnhJWAe9IPZGM"
+MODEL_NAME = "gemini-2.0-flash-lite"
+GEMINI_API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL_NAME}:generateContent?key={GEMINI_API_KEY}"
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
@@ -20,27 +21,42 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 model = load_model("model/keras_Model.h5", compile=False)
 class_names = open("model/labels.txt", "r").readlines()
 
-# 🔹 Fungsi You.com: Jelaskan penyakit berdasarkan nama (pakai ydc-index.io)
-def get_you_diagnosis(disease_name):
-    query = f"penyakit {disease_name}, gejala, penyebab, penyembuhan dan obat"
+# 🔹 Fungsi Gemini AI: Jelaskan penyakit berdasarkan nama
+def get_gemini_diagnosis(disease_name):
+    prompt = (
+        f"Tolong jelaskan informasi tentang penyakit berikut ini:\n\n"
+        f"Nama penyakit: {disease_name}\n\n"
+        f"Saya ingin tahu:\n"
+        f"- Apa itu penyakit ini?\n"
+        f"- Bagaimana gejala dan penyebabnya?\n"
+        f"- Bagaimana cara penyembuhannya?\n"
+        f"- Obat untuk penyakit ini?\n"
+        f"Jelaskan dengan bahasa awam."
+    )
+
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "contents": [
+            {
+                "parts": [
+                    {
+                        "text": prompt
+                    }
+                ]
+            }
+        ]
+    }
 
     try:
-        headers = {"X-API-Key": YOU_API_KEY}
-        params = {"query": query}
-        response = requests.get(YOU_API_URL, headers=headers, params=params)
+        response = requests.post(GEMINI_API_URL, json=payload, headers=headers)
         response.raise_for_status()
         data = response.json()
-
-        # Ambil semua snippet hasil pencarian
-        snippets = data.get("snippets", [])
-        if not snippets:
-            return "❌ Tidak ada informasi yang ditemukan dari You.com."
-
-        # Gabungkan semua hasil snippet
-        combined = "<br>".join([s.get("snippet", "") for s in snippets])
-        return combined
+        return data['candidates'][0]['content']['parts'][0]['text']
     except Exception as e:
-        return f"❌ You AI gagal menjawab: {str(e)}"
+        return f"❌ Gemini AI gagal menjawab: {str(e)}"
 
 # 🔹 Prediksi gambar dengan Keras
 def predict_keras(image_np):
@@ -68,12 +84,12 @@ def detect_disease_with_camera():
     cv2.imwrite(image_path, frame)
 
     predicted_label, confidence = predict_keras(frame)
-    you_info = get_you_diagnosis(predicted_label)
+    gpt_info = get_gemini_diagnosis(predicted_label)
 
     result = (
         f"📸 Deteksi Kamera: <b>{predicted_label}</b><br>"
         f"🧪 Kepercayaan Model: {confidence:.2%}<br><br>"
-        f"🧠 You.com Info:<br>{you_info}"
+        f"🧠 Gemini AI Menjawab:<br>{gpt_info}"
     )
     return result, image_path
 
@@ -83,12 +99,12 @@ def detect_disease_with_upload(image_path):
         b64_image = base64.b64encode(img_file.read()).decode("utf-8")
 
     predicted_label, confidence = predict_keras(cv2.imread(image_path))
-    you_info = get_you_diagnosis(predicted_label)
+    gpt_info = get_gemini_diagnosis(predicted_label)
 
     result = (
         f"📤 Deteksi Upload: <b>{predicted_label}</b><br>"
         f"🧪 Kepercayaan Model: {confidence:.2%}<br><br>"
-        f"🧠 You.com Info:<br>{you_info}"
+        f"🧠 Gemini AI Menjawab:<br>{gpt_info}"
     )
     return result
 
