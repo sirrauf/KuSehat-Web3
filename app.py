@@ -35,10 +35,16 @@ def get_gpt_diagnosis(disease_name):
     try:
         response = ChatCompletion.create(
             model=g4f.models.gpt_4o,
-            provider=g4f.Provider.Aichat,  # ✅ Gunakan provider yang tidak butuh login
+            provider=Provider.OpenaiChat,  # ✅ Ganti provider ke OpenaiChat
             messages=[
-                {"role": "system", "content": "Kamu adalah seorang Dokter specialits Kulit,Dokter specialist Kelamin, dan Dokter Kanker Payudara profesional berpengalaman mengani 10000 pasien selama 25 tahun."},
-                {"role": "user", "content": prompt}
+                {
+                    "role": "system",
+                    "content": "Kamu adalah dokter kulit, kelamin, dan kanker payudara berpengalaman 25 tahun."
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
             ]
         )
         return response
@@ -100,10 +106,16 @@ def detect_disease_with_upload(image_path):
     try:
         response = ChatCompletion.create(
             model=g4f.models.gpt_4o,
-            provider=g4f.Provider.Aichat,
+            provider=Provider.OpenaiChat,
             messages=[
-                {"role": "system", "content": "Kamu adalah seorang Dokter specialits Kulit,Dokter specialist Kelamin, dan Dokter Kanker Payudara profesional berpengalaman mengani 10000 pasien selama 25 tahun."},
-                {"role": "user", "content": prompt}
+                {
+                    "role": "system",
+                    "content": "Kamu adalah dokter kulit, kelamin, dan kanker payudara profesional."
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
             ]
         )
         return response
