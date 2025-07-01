@@ -7,12 +7,15 @@ from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
 from keras.models import load_model
 
-# GPT4Free
-import g4f
-from g4f import ChatCompletion, Provider
+# ✅ Import Gemini
+import google.generativeai as genai
 
-# Ganti dengan API key Anda
-DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "sk-7a2db1ceab3b4903b31a534efbec9aa1")
+# ✅ Konfigurasi Gemini API Key
+GENAI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyAWgxLGQ8kDzljqSGE_IcstZQsh5KuL7Dc")
+genai.configure(api_key=GENAI_API_KEY)
+
+# ✅ Gunakan model yang benar
+gemini_model = genai.GenerativeModel("models/gemini-1.5-pro")
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
@@ -22,8 +25,8 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 model = load_model("model/keras_Model.h5", compile=False)
 class_names = open("model/labels.txt", "r").readlines()
 
-# 🔹 Fungsi GPT: Jelaskan penyakit berdasarkan nama
-def get_deepseek_diagnosis(disease_name):
+# 🔹 Fungsi Gemini: Jelaskan penyakit berdasarkan nama
+def get_gemini_diagnosis(disease_name):
     prompt = (
         f"Tolong jelaskan informasi tentang penyakit berikut ini:\n\n"
         f"Nama penyakit: {disease_name}\n\n"
@@ -35,18 +38,10 @@ def get_deepseek_diagnosis(disease_name):
         f"Jelaskan dengan bahasa awam."
     )
     try:
-        response = ChatCompletion.create(
-            model="deepseek-chat",
-            provider=Provider.DeepSeek,  
-            api_key=DEEPSEEK_API_KEY,
-            messages=[
-                {"role": "system", "content": "Kamu adalah dokter spesialis kulit, kelamin, dan kanker payudara profesional berpengalaman selama 25 tahun."},
-                {"role": "user", "content": prompt}
-            ]
-        )
-        return response
+        response = gemini_model.generate_content(prompt)
+        return response.text
     except Exception as e:
-        return f"❌ Deepseek gagal menjawab: {str(e)}"
+        return f"❌ Gemini gagal menjawab: {str(e)}"
 
 # 🔹 Prediksi gambar dengan Keras
 def predict_keras(image_np):
@@ -74,12 +69,12 @@ def detect_disease_with_camera():
     cv2.imwrite(image_path, frame)
 
     predicted_label, confidence = predict_keras(frame)
-    gpt_info = get_deepseek_diagnosis(predicted_label)
+    gpt_info = get_gemini_diagnosis(predicted_label)
 
     result = (
         f"📸 Deteksi Kamera: <b>{predicted_label}</b><br>"
         f"🧪 Kepercayaan Model: {confidence:.2%}<br><br>"
-        f"🧠 Deepseek Menjawab:<br>{gpt_info}"
+        f"🧠 Gemini Menjawab:<br>{gpt_info}"
     )
     return result, image_path
 
@@ -98,18 +93,10 @@ def detect_disease_with_upload(image_path):
         f"Gambar base64:\n{b64_image}"
     )
     try:
-        response = ChatCompletion.create(
-            model="deepseek-chat",
-            provider=Provider.DeepSeek,
-            api_key=DEEPSEEK_API_KEY,
-            messages=[
-                {"role": "system", "content": "Kamu adalah dokter spesialis kulit, kelamin, dan kanker payudara profesional berpengalaman selama 25 tahun."},
-                {"role": "user", "content": prompt}
-            ]
-        )
-        return response
+        response = gemini_model.generate_content(prompt)
+        return response.text
     except Exception as e:
-        return f"❌ Deepseek gagal menjawab: {str(e)}"
+        return f"❌ Gemini gagal menjawab: {str(e)}"
 
 # 🔹 Route utama
 @app.route("/", methods=["GET", "POST"])
@@ -128,7 +115,7 @@ def home():
                 image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(image_path)
                 gpt_result = detect_disease_with_upload(image_path)
-                diagnosis = f"🧠 Deepseek Analisa Upload Gambar:<br>{gpt_result}"
+                diagnosis = f"🧠 Gemini Analisa Upload Gambar:<br>{gpt_result}"
         elif method == "camera":
             diagnosis, image_path = detect_disease_with_camera()
 
