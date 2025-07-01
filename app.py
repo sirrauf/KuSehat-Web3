@@ -11,6 +11,7 @@ from keras.models import load_model
 import g4f
 from g4f import ChatCompletion, Provider
 
+# Inisialisasi Flask
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -18,6 +19,9 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 # Load model dan label
 model = load_model("model/keras_Model.h5", compile=False)
 class_names = open("model/labels.txt", "r").readlines()
+
+# ✅ API Key DeepSeek
+DEEPSEEK_API_KEY = "ISI_API_KEY_ANDA"
 
 # 🔹 Fungsi GPT: Jelaskan penyakit berdasarkan nama
 def get_gpt_diagnosis(disease_name):
@@ -35,7 +39,8 @@ def get_gpt_diagnosis(disease_name):
     try:
         response = ChatCompletion.create(
             model=g4f.models.gpt_4,
-            provider=Provider.DeepseekAPI,  # ✅ Ganti ke DeepSeekAPI
+            provider=Provider.DeepseekAPI,
+            api_key='sk-7a2db1ceab3b4903b31a534efbec9aa1',
             messages=[
                 {"role": "system", "content": "Kamu adalah dokter spesialis kulit, kelamin, dan kanker payudara profesional berpengalaman selama 25 tahun."},
                 {"role": "user", "content": prompt}
@@ -100,7 +105,8 @@ def detect_disease_with_upload(image_path):
     try:
         response = ChatCompletion.create(
             model=g4f.models.gpt_4,
-            provider=Provider.DeepseekAPI,  # ✅ Ganti ke DeepSeekAPI
+            provider=Provider.DeepSeek,
+            api_key='sk-7a2db1ceab3b4903b31a534efbec9aa1',
             messages=[
                 {"role": "system", "content": "Kamu adalah dokter spesialis kulit, kelamin, dan kanker payudara profesional berpengalaman selama 25 tahun."},
                 {"role": "user", "content": prompt}
@@ -135,5 +141,6 @@ def home():
 
     return render_template("index.html", diagnosis=diagnosis, image_path=image_path)
 
+# 🔹 Jalankan Aplikasi
 if __name__ == "__main__":
     app.run(debug=True)
