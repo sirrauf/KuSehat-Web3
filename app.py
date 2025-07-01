@@ -11,8 +11,8 @@ from keras.models import load_model
 import g4f
 from g4f import ChatCompletion, Provider
 
-# API Key untuk DeepSeekAPI (❗ganti dengan milik Anda)
-DEEPSEEK_API_KEY = "sk-7a2db1ceab3b4903b31a534efbec9aa1"
+# Ganti dengan API key Anda
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "sk-7a2db1ceab3b4903b31a534efbec9aa1")
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
@@ -34,12 +34,11 @@ def get_gpt_diagnosis(disease_name):
         f"- Obat untuk penyakit ini?\n"
         f"Jelaskan dengan bahasa awam."
     )
-
     try:
         response = ChatCompletion.create(
             model="deepseek-chat",
-            provider=Provider.DeepSeekAPI,
-            api_key='sk-7a2db1ceab3b4903b31a534efbec9aa1',
+            provider=Provider.DeepSeek,  
+            api_key=DEEPSEEK_API_KEY,
             messages=[
                 {"role": "system", "content": "Kamu adalah dokter spesialis kulit, kelamin, dan kanker payudara profesional berpengalaman selama 25 tahun."},
                 {"role": "user", "content": prompt}
@@ -65,10 +64,8 @@ def detect_disease_with_camera():
     cam = cv2.VideoCapture(0)
     if not cam.isOpened():
         return "❌ Kamera tidak tersedia", None
-
     ret, frame = cam.read()
     cam.release()
-
     if not ret:
         return "❌ Gagal mengambil gambar", None
 
@@ -100,12 +97,11 @@ def detect_disease_with_upload(image_path):
         "Jawab dengan bahasa mudah dimengerti.\n"
         f"Gambar base64:\n{b64_image}"
     )
-
     try:
         response = ChatCompletion.create(
             model="deepseek-chat",
-            provider=Provider.DeepSeekAPI,
-            api_key='sk-7a2db1ceab3b4903b31a534efbec9aa1',
+            provider=Provider.DeepSeek,
+            api_key=DEEPSEEK_API_KEY,
             messages=[
                 {"role": "system", "content": "Kamu adalah dokter spesialis kulit, kelamin, dan kanker payudara profesional berpengalaman selama 25 tahun."},
                 {"role": "user", "content": prompt}
@@ -123,7 +119,6 @@ def home():
 
     if request.method == "POST":
         method = request.form.get("method")
-
         if method == "upload":
             file = request.files.get("image")
             if not file or file.filename == "":
@@ -134,7 +129,6 @@ def home():
                 file.save(image_path)
                 gpt_result = detect_disease_with_upload(image_path)
                 diagnosis = f"🧠 GPT Analisa Upload Gambar:<br>{gpt_result}"
-
         elif method == "camera":
             diagnosis, image_path = detect_disease_with_camera()
 
