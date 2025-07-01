@@ -10,12 +10,12 @@ from keras.models import load_model
 # ✅ Import Gemini
 import google.generativeai as genai
 
-# ✅ Set API Key dari Google Gemini
+# ✅ Konfigurasi Gemini API Key
 GENAI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyAWgxLGQ8kDzljqSGE_IcstZQsh5KuL7Dc")
 genai.configure(api_key=GENAI_API_KEY)
 
-# 🔄 Inisialisasi model Gemini
-gemini_model = genai.GenerativeModel("gemini-pro")
+# ✅ Gunakan model yang benar
+gemini_model = genai.GenerativeModel("models/gemini-1.5-pro")
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
