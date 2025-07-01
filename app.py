@@ -9,7 +9,7 @@ from werkzeug.utils import secure_filename
 from keras.models import load_model
 
 # Konfigurasi API You.com
-YOU_API_KEY = "02c4585f-a3e2-4cfc-a0f8-042c003b3c03<__>1RfxPyETU8N2v5f4r1d4elnD"
+YOU_API_KEY = "bf0a11e1-0ce9-49cd-b8e1-cccc7ebcd88a<__>1RfxPyETU8N2v5f4r1d4elnD"
 YOU_API_URL = "https://chat-api.you.com/smart"
 
 app = Flask(__name__)
