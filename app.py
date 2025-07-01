@@ -35,7 +35,7 @@ def get_gpt_diagnosis(disease_name):
     try:
         response = ChatCompletion.create(
             model=g4f.models.gpt_4o,
-            provider=Provider.Bing,  # ✅ Gunakan provider yang tidak butuh login
+            provider=g4f.Provider.Aichat,  # ✅ Gunakan provider yang tidak butuh login
             messages=[
                 {"role": "system", "content": "Kamu adalah seorang Dokter specialits Kulit,Dokter specialist Kelamin, dan Dokter Kanker Payudara profesional berpengalaman mengani 10000 pasien selama 25 tahun."},
                 {"role": "user", "content": prompt}
@@ -100,7 +100,7 @@ def detect_disease_with_upload(image_path):
     try:
         response = ChatCompletion.create(
             model=g4f.models.gpt_4o,
-            provider=Provider.Bing,
+            provider=g4f.Provider.Aichat,
             messages=[
                 {"role": "system", "content": "Kamu adalah seorang Dokter specialits Kulit,Dokter specialist Kelamin, dan Dokter Kanker Payudara profesional berpengalaman mengani 10000 pasien selama 25 tahun."},
                 {"role": "user", "content": prompt}
