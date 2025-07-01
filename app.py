@@ -8,8 +8,9 @@ from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
 from keras.models import load_model
 
-# ✅ API Key YouChat (via OpenRouter.ai atau proxy)
-YOU_API_KEY = os.getenv("YOU_API_KEY", "02c4585f-a3e2-4cfc-a0f8-042c003b3c03<__>1RfxPyETU8N2v5f4r1d4elnD")
+# Konfigurasi API You.com
+YOU_API_KEY = "02c4585f-a3e2-4cfc-a0f8-042c003b3c03<__>1RfxPyETU8N2v5f4r1d4elnD"
+YOU_API_URL = "https://chat-api.you.com/smart"
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
@@ -19,7 +20,7 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 model = load_model("model/keras_Model.h5", compile=False)
 class_names = open("model/labels.txt", "r").readlines()
 
-# 🔹 Fungsi diagnosis penyakit dari teks (YouChat)
+# 🔹 Fungsi You AI Chat: Jelaskan penyakit berdasarkan nama
 def get_you_diagnosis(disease_name):
     prompt = (
         f"Tolong jelaskan informasi tentang penyakit berikut ini:\n\n"
@@ -34,53 +35,19 @@ def get_you_diagnosis(disease_name):
 
     try:
         headers = {
-            "Authorization": f"Bearer {YOU_API_KEY}",
+            "X-API-Key": YOU_API_KEY,
             "Content-Type": "application/json"
         }
-        data = {
-            "model": "youchat",
-            "messages": [
-                {"role": "user", "content": prompt}
-            ]
+        payload = {
+            "query": prompt
         }
-        res = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=data)
-        res.raise_for_status()
-        return res.json()["choices"][0]["message"]["content"]
+
+        response = requests.post(YOU_API_URL, json=payload, headers=headers)
+        response.raise_for_status()
+        result = response.json()
+        return result.get("text", "❌ You AI tidak memberikan respons teks.")
     except Exception as e:
-        return f"❌ YouChat gagal menjawab: {str(e)}"
-
-# 🔹 Fungsi diagnosis berdasarkan gambar upload (YouChat)
-def get_you_diagnosis_from_image(image_path):
-    try:
-        with open(image_path, "rb") as f:
-            image_data = base64.b64encode(f.read()).decode("utf-8")
-
-        prompt = (
-            "Saya mengunggah gambar penyakit kulit. Tolong bantu identifikasi dan jawab secara detail:\n"
-            "- Nama penyakit\n"
-            "- Deskripsi penyakit\n"
-            "- Cara penyembuhan\n"
-            "- Nama obat\n\n"
-            "Jawab dengan bahasa mudah dimengerti.\n"
-            f"Gambar base64:\n{image_data}"
-        )
-
-        headers = {
-            "Authorization": f"Bearer {YOU_API_KEY}",
-            "Content-Type": "application/json"
-        }
-        data = {
-            "model": "youchat",
-            "messages": [
-                {"role": "user", "content": prompt}
-            ]
-        }
-        res = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=data)
-        res.raise_for_status()
-        return res.json()["choices"][0]["message"]["content"]
-
-    except Exception as e:
-        return f"❌ YouChat gagal menjawab: {str(e)}"
+        return f"❌ You AI gagal menjawab: {str(e)}"
 
 # 🔹 Prediksi gambar dengan Keras
 def predict_keras(image_np):
@@ -108,18 +75,45 @@ def detect_disease_with_camera():
     cv2.imwrite(image_path, frame)
 
     predicted_label, confidence = predict_keras(frame)
-    gpt_info = get_you_diagnosis(predicted_label)
+    you_info = get_you_diagnosis(predicted_label)
 
     result = (
         f"📸 Deteksi Kamera: <b>{predicted_label}</b><br>"
         f"🧪 Kepercayaan Model: {confidence:.2%}<br><br>"
-        f"🧠 YouChat Menjawab:<br>{gpt_info}"
+        f"🧠 You AI Menjawab:<br>{you_info}"
     )
     return result, image_path
 
 # 🔹 Deteksi lewat upload gambar
 def detect_disease_with_upload(image_path):
-    return get_you_diagnosis_from_image(image_path)
+    with open(image_path, "rb") as img_file:
+        b64_image = base64.b64encode(img_file.read()).decode("utf-8")
+
+    prompt = (
+        "Saya mengunggah gambar penyakit kulit. Tolong bantu identifikasi dan jawab secara detail:\n"
+        "- Nama penyakit\n"
+        "- Deskripsi penyakit\n"
+        "- Cara penyembuhan\n"
+        "- Nama obat\n\n"
+        "Jawab dengan bahasa mudah dimengerti.\n"
+        f"Gambar base64:\n{b64_image}"
+    )
+
+    try:
+        headers = {
+            "X-API-Key": YOU_API_KEY,
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "query": prompt
+        }
+
+        response = requests.post(YOU_API_URL, json=payload, headers=headers)
+        response.raise_for_status()
+        result = response.json()
+        return result.get("text", "❌ You AI tidak memberikan respons teks.")
+    except Exception as e:
+        return f"❌ You AI gagal menjawab: {str(e)}"
 
 # 🔹 Route utama
 @app.route("/", methods=["GET", "POST"])
@@ -138,7 +132,7 @@ def home():
                 image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(image_path)
                 gpt_result = detect_disease_with_upload(image_path)
-                diagnosis = f"🧠 YouChat Analisa Upload Gambar:<br>{gpt_result}"
+                diagnosis = f"🧠 You AI Analisa Upload Gambar:<br>{gpt_result}"
         elif method == "camera":
             diagnosis, image_path = detect_disease_with_camera()
 
