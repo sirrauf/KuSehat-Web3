@@ -12,7 +12,7 @@ import g4f
 from g4f import ChatCompletion, Provider
 
 # API Key untuk DeepSeekAPI (❗ganti dengan milik Anda)
-DEEPSEEK_API_KEY = "YOUR_DEEPSEEK_API_KEY_HERE"
+DEEPSEEK_API_KEY = "sk-7a2db1ceab3b4903b31a534efbec9aa1"
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
