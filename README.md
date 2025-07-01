@@ -8,9 +8,12 @@ Feature:
 4. Deteksi Penyakit Real-time melalui kamera dan akan menghasilkan nama penyakit,deskripsi penyakit,cara penyembuhan dan obat.
 5. Deteksi penyakit melalui upload gambar dan akan menghasilkan nama penyakit,deskripsi penyakit,cara penyembuhan dan obat.
 
-Demo Tampilan melalui Screenshot:
 
-![Tampilan KuSehat]()
+Demo KuSehat Website untuk submit World Hacker Code Leage Tampilan melalui Screenshot:
+![Tampilan KuSehat Submission World Hacker Code Leage ]()
+Demo KuSehat Website khusus Machine Learning saja tampilan melalui Screenshot:
+
+![Tampilan KuSehat ML Only]()
 
 Demo Live Website:
 
