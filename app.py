@@ -34,17 +34,11 @@ def get_gpt_diagnosis(disease_name):
 
     try:
         response = ChatCompletion.create(
-            model=g4f.models.gpt_4o,
-            provider=Provider.OpenaiChat,  # ✅ Ganti provider ke OpenaiChat
+            model=g4f.models.gpt_4,
+            provider=Provider.DeepseekAPI,  # ✅ Ganti ke DeepSeekAPI
             messages=[
-                {
-                    "role": "system",
-                    "content": "Kamu adalah dokter kulit, kelamin, dan kanker payudara berpengalaman 25 tahun."
-                },
-                {
-                    "role": "user",
-                    "content": prompt
-                }
+                {"role": "system", "content": "Kamu adalah dokter spesialis kulit, kelamin, dan kanker payudara profesional berpengalaman selama 25 tahun."},
+                {"role": "user", "content": prompt}
             ]
         )
         return response
@@ -98,24 +92,18 @@ def detect_disease_with_upload(image_path):
         "- Nama penyakit\n"
         "- Deskripsi penyakit\n"
         "- Cara penyembuhan\n"
-        "- Nama obat umum\n\n"
+        "- Nama obat\n\n"
         "Jawab dengan bahasa mudah dimengerti.\n"
         f"Gambar base64:\n{b64_image}"
     )
 
     try:
         response = ChatCompletion.create(
-            model=g4f.models.gpt_4o,
-            provider=Provider.OpenaiChat,
+            model=g4f.models.gpt_4,
+            provider=Provider.DeepseekAPI,  # ✅ Ganti ke DeepSeekAPI
             messages=[
-                {
-                    "role": "system",
-                    "content": "Kamu adalah dokter kulit, kelamin, dan kanker payudara profesional."
-                },
-                {
-                    "role": "user",
-                    "content": prompt
-                }
+                {"role": "system", "content": "Kamu adalah dokter spesialis kulit, kelamin, dan kanker payudara profesional berpengalaman selama 25 tahun."},
+                {"role": "user", "content": prompt}
             ]
         )
         return response
