@@ -8,9 +8,9 @@ from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
 from keras.models import load_model
 
-# Konfigurasi API You.com
-YOU_API_KEY = "a0a7ea3c-70af-45b2-a1a3-13defad18b27<__>1RfxPyETU8N2v5f4r1d4elnD"
-YOU_API_URL = "https://chat-api.you.com/smart"
+# Konfigurasi API You.com (pakai endpoint ydc-index.io)
+YOU_API_KEY = "a0a7ea3c-70af-45b2-a1a3-13defad18b27-1RfxPyETU8N2v5f4r1d4elnD"
+YOU_API_URL = "https://api.ydc-index.io/search"
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
@@ -20,32 +20,25 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 model = load_model("model/keras_Model.h5", compile=False)
 class_names = open("model/labels.txt", "r").readlines()
 
-# 🔹 Fungsi You AI Chat: Jelaskan penyakit berdasarkan nama
+# 🔹 Fungsi You.com: Jelaskan penyakit berdasarkan nama (pakai ydc-index.io)
 def get_you_diagnosis(disease_name):
-    prompt = (
-        f"Tolong jelaskan informasi tentang penyakit berikut ini:\n\n"
-        f"Nama penyakit: {disease_name}\n\n"
-        f"Saya ingin tahu:\n"
-        f"- Apa itu penyakit ini?\n"
-        f"- Bagaimana gejala dan penyebabnya?\n"
-        f"- Bagaimana cara penyembuhannya?\n"
-        f"- Obat untuk penyakit ini?\n"
-        f"Jelaskan dengan bahasa awam."
-    )
+    query = f"penyakit {disease_name}, gejala, penyebab, penyembuhan dan obat"
 
     try:
-        headers = {
-            "X-API-Key": YOU_API_KEY,
-            "Content-Type": "application/json"
-        }
-        payload = {
-            "query": prompt
-        }
-
-        response = requests.post(YOU_API_URL, json=payload, headers=headers)
+        headers = {"X-API-Key": YOU_API_KEY}
+        params = {"query": query}
+        response = requests.get(YOU_API_URL, headers=headers, params=params)
         response.raise_for_status()
-        result = response.json()
-        return result.get("text", "❌ You AI tidak memberikan respons teks.")
+        data = response.json()
+
+        # Ambil semua snippet hasil pencarian
+        snippets = data.get("snippets", [])
+        if not snippets:
+            return "❌ Tidak ada informasi yang ditemukan dari You.com."
+
+        # Gabungkan semua hasil snippet
+        combined = "<br>".join([s.get("snippet", "") for s in snippets])
+        return combined
     except Exception as e:
         return f"❌ You AI gagal menjawab: {str(e)}"
 
@@ -80,7 +73,7 @@ def detect_disease_with_camera():
     result = (
         f"📸 Deteksi Kamera: <b>{predicted_label}</b><br>"
         f"🧪 Kepercayaan Model: {confidence:.2%}<br><br>"
-        f"🧠 You AI Menjawab:<br>{you_info}"
+        f"🧠 You.com Info:<br>{you_info}"
     )
     return result, image_path
 
@@ -89,31 +82,15 @@ def detect_disease_with_upload(image_path):
     with open(image_path, "rb") as img_file:
         b64_image = base64.b64encode(img_file.read()).decode("utf-8")
 
-    prompt = (
-        "Saya mengunggah gambar penyakit kulit. Tolong bantu identifikasi dan jawab secara detail:\n"
-        "- Nama penyakit\n"
-        "- Deskripsi penyakit\n"
-        "- Cara penyembuhan\n"
-        "- Nama obat\n\n"
-        "Jawab dengan bahasa mudah dimengerti.\n"
-        f"Gambar base64:\n{b64_image}"
+    predicted_label, confidence = predict_keras(cv2.imread(image_path))
+    you_info = get_you_diagnosis(predicted_label)
+
+    result = (
+        f"📤 Deteksi Upload: <b>{predicted_label}</b><br>"
+        f"🧪 Kepercayaan Model: {confidence:.2%}<br><br>"
+        f"🧠 You.com Info:<br>{you_info}"
     )
-
-    try:
-        headers = {
-            "X-API-Key": YOU_API_KEY,
-            "Content-Type": "application/json"
-        }
-        payload = {
-            "query": prompt
-        }
-
-        response = requests.post(YOU_API_URL, json=payload, headers=headers)
-        response.raise_for_status()
-        result = response.json()
-        return result.get("text", "❌ You AI tidak memberikan respons teks.")
-    except Exception as e:
-        return f"❌ You AI gagal menjawab: {str(e)}"
+    return result
 
 # 🔹 Route utama
 @app.route("/", methods=["GET", "POST"])
@@ -131,8 +108,7 @@ def home():
                 filename = secure_filename(file.filename)
                 image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(image_path)
-                gpt_result = detect_disease_with_upload(image_path)
-                diagnosis = f"🧠 You AI Analisa Upload Gambar:<br>{gpt_result}"
+                diagnosis = detect_disease_with_upload(image_path)
         elif method == "camera":
             diagnosis, image_path = detect_disease_with_camera()
 
