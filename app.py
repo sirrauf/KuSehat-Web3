@@ -23,7 +23,7 @@ model = load_model("model/keras_Model.h5", compile=False)
 class_names = open("model/labels.txt", "r").readlines()
 
 # 🔹 Fungsi GPT: Jelaskan penyakit berdasarkan nama
-def get_gpt_diagnosis(disease_name):
+def get_deepseek_diagnosis(disease_name):
     prompt = (
         f"Tolong jelaskan informasi tentang penyakit berikut ini:\n\n"
         f"Nama penyakit: {disease_name}\n\n"
@@ -46,7 +46,7 @@ def get_gpt_diagnosis(disease_name):
         )
         return response
     except Exception as e:
-        return f"❌ GPT gagal menjawab: {str(e)}"
+        return f"❌ Deepseek gagal menjawab: {str(e)}"
 
 # 🔹 Prediksi gambar dengan Keras
 def predict_keras(image_np):
@@ -74,12 +74,12 @@ def detect_disease_with_camera():
     cv2.imwrite(image_path, frame)
 
     predicted_label, confidence = predict_keras(frame)
-    gpt_info = get_gpt_diagnosis(predicted_label)
+    gpt_info = get_deepseek_diagnosis(predicted_label)
 
     result = (
         f"📸 Deteksi Kamera: <b>{predicted_label}</b><br>"
         f"🧪 Kepercayaan Model: {confidence:.2%}<br><br>"
-        f"🧠 GPT Menjawab:<br>{gpt_info}"
+        f"🧠 Deepseek Menjawab:<br>{gpt_info}"
     )
     return result, image_path
 
@@ -109,7 +109,7 @@ def detect_disease_with_upload(image_path):
         )
         return response
     except Exception as e:
-        return f"❌ GPT gagal menjawab: {str(e)}"
+        return f"❌ Deepseek gagal menjawab: {str(e)}"
 
 # 🔹 Route utama
 @app.route("/", methods=["GET", "POST"])
@@ -128,7 +128,7 @@ def home():
                 image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(image_path)
                 gpt_result = detect_disease_with_upload(image_path)
-                diagnosis = f"🧠 GPT Analisa Upload Gambar:<br>{gpt_result}"
+                diagnosis = f"🧠 Deepseek Analisa Upload Gambar:<br>{gpt_result}"
         elif method == "camera":
             diagnosis, image_path = detect_disease_with_camera()
 
