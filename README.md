@@ -8,9 +8,12 @@ Feature:
 4. Deteksi Penyakit Real-time melalui kamera dan akan menghasilkan nama penyakit,deskripsi penyakit,cara penyembuhan dan obat.
 5. Deteksi penyakit melalui upload gambar dan akan menghasilkan nama penyakit,deskripsi penyakit,cara penyembuhan dan obat.
 
+Demo Tampilan melalui Screenshot:
 ![Tampilan KuSehat]()
 
-[Live Website KuSehat]()
+Demo Live Website:
+[Live Website KuSehat ML](http://kusehatweb3.kusehat.co.id/)
+[Live Website KuSehat ML](http://kusehatml.kusehat.co.id/)
 
 # Cara run server website di Lokal Laptop 
 1. [Download Python Versi 3.10.11]([https://www.python.org/downloads/release/python-3134/](https://www.python.org/downloads/release/python-31011/)
