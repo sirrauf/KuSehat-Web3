@@ -16,6 +16,8 @@ Demo KuSehat Website untuk submit World Hacker Code Leage Tampilan melalui Scree
 Demo KuSehat Website khusus Machine Learning saja tampilan melalui Screenshot:
 
 ![Tampilan KuSehat ML Only](https://github.com/sirrauf/KuSehat-Web3/blob/main/Hasil%20tampilan%20Screenshoot/SS%20Demo%20Website%20KuSehat%20ML%20Only.png?raw=true)
+![Tampilan KuSehat ML Only](https://github.com/sirrauf/KuSehat-Web3/blob/main/Hasil%20tampilan%20Screenshoot/SS%20Demo%20Website%20KuSehat%20ML%20Only2.png?raw=true)
+
 
 Demo Live Website:
 
