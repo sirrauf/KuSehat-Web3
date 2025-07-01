@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
+    <meta charset="UTF-8">
     <title>AI Deteksi Penyakit Kulit</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='contoh-dashboard-user-style.css') }}">
 </head>
@@ -19,7 +20,9 @@
         {% if diagnosis %}
             <hr>
             <h3>Hasil Diagnosa:</h3>
-            <p>{{ diagnosis|safe }}</p>
+            <div class="diagnosis">
+                {{ diagnosis|safe }}
+            </div>
         {% endif %}
 
         {% if image_path %}
