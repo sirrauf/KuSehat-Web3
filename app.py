@@ -11,7 +11,7 @@ from keras.models import load_model
 import google.generativeai as genai
 
 # ✅ Konfigurasi Gemini API Key
-GENAI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyAWgxLGQ8kDzljqSGE_IcstZQsh5KuL7Dc")
+GENAI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyCfo4-VTJgMNNB8MVKUjADblApz2qzFWTE")
 genai.configure(api_key=GENAI_API_KEY)
 
 # ✅ Gunakan model yang benar
