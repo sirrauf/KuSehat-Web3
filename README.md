@@ -10,10 +10,13 @@ Feature:
 
 
 Demo KuSehat Website untuk submit World Hacker Code Leage Tampilan melalui Screenshot:
+
 ![Tampilan KuSehat Submission World Hacker Code Leage ]()
+
 Demo KuSehat Website khusus Machine Learning saja tampilan melalui Screenshot:
 
-![Tampilan KuSehat ML Only]()
+![Tampilan KuSehat ML Only](https://github.com/sirrauf/KuSehat-Web3/blob/main/Hasil%20tampilan%20Screenshoot/SS%20Demo%20Website%20KuSehat%20ML%20Only.png?raw=true)
+![Tampilan KuSehat ML Only](https://github.com/sirrauf/KuSehat-Web3/blob/main/Hasil%20tampilan%20Screenshoot/SS%20Demo%20Website%20KuSehat%20ML%20Only2.png?raw=true)
 
 Demo Live Website:
 
@@ -22,9 +25,16 @@ Demo Live Website:
 
 [Live Website KuSehat ML](http://kusehatml.kusehat.co.id/)
 
+
+# Cara Kontribusi
+1. [Download Python Versi 3.10.11](https://www.python.org/downloads/release/python-31011/)
+2. Install dan Setting Enviroment Variabel di path sistem, contoh path Python ditambahkan ke path sistem: C://Python310/Scripts,C://Python31011/Lib,dan C://Python310
+3. [Download Visual Studion Code dan Install](https://code.visualstudio.com/)
+4. Install extension Python di Visual Studio Code.
+
 # Cara run server website di Lokal Laptop 
-1. [Download Python Versi 3.10.11]([https://www.python.org/downloads/release/python-3134/](https://www.python.org/downloads/release/python-31011/)
-2. Install dan Setting Enviroment Variabel di path sistem, contoh path Python ditambahkan ke path sistem: C://Python31011/Scripts,C://Python31011/Lib,dan C://Python31011
+1. [Download Python Versi 3.10.11](https://www.python.org/downloads/release/python-31011/)
+2. Install dan Setting Enviroment Variabel di path sistem, contoh path Python ditambahkan ke path sistem: C://Python310/Scripts,C://Python310/Lib,dan C://Python310
 3. Buat Virtual Enviroment Machine untuk menampung library Python yg akan diinstal: python -m venv kusehat-env
 4. Aktifkan Virtual Enviroment Machine,ketik di Command Prompt dalam folder project: cd kusehat-env/Scripts.
 5. Setelah itu,ketik di Command prompt didalam folder project: activate.bat
