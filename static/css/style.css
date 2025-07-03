@@ -15,7 +15,7 @@ nav {
 }
 
 nav a {
-  color: #fff;
+  color: white;
   font-weight: bold;
   margin-right: 20px;
   text-decoration: none;
@@ -59,11 +59,11 @@ th, td {
 
 th {
   background-color: #e9f1ff;
-  color: #333;
   font-weight: bold;
+  color: #333;
 }
 
-/* === FORM FIELDS === */
+/* === FORMS === */
 form label {
   display: block;
   margin-top: 15px;
@@ -90,7 +90,7 @@ form input[type="submit"] {
   margin-top: 15px;
   padding: 10px 25px;
   background-color: #28a745;
-  color: #fff;
+  color: white;
   font-weight: bold;
   border: none;
   border-radius: 6px;
@@ -106,13 +106,13 @@ form input[type="submit"]:hover {
 .diagnosis {
   margin-top: 15px;
   padding: 15px;
-  background: #f3fff3;
+  border: 1px solid #ccc;
+  background-color: #f3fff3;
   border-left: 5px solid #28a745;
   border-radius: 6px;
-  color: #333;
 }
 
-/* === CAMERA VIDEO === */
+/* === VIDEO STYLING === */
 video {
   border-radius: 8px;
   margin-top: 10px;
