@@ -24,6 +24,9 @@
     <a onclick="showSection('register')">Daftar</a>
     <a onclick="showSection('dashboard')">Dashboard</a>
     <a onclick="showSection('topup')">Top Up</a>
+    <a onclick="showSection('exchange')">Tukar Gambar</a>
+    <a onclick="showSection('diseaseprice')">Harga Penukaran</a>
+
   </nav>
 
   <section id="pricing" class="active">
@@ -33,8 +36,8 @@
         <tr><th>Paket</th><th>Fitur</th><th>Harga</th></tr>
       </thead>
       <tbody>
-        <tr><td>Basic</td><td>Fitur Deteksi Penyakit melalui kamera</td><td>Rp50.000</td></tr>
-        <tr><td>Premium</td><td>1. Fitur Deteksi penyakit melalui kamera,2. Fitur Deteksi penyakit melalui upload gambar</td><td>Rp150.000</td></tr>
+        <tr><td>Basic</td><td>Fitur Deteksi Penyakit melalui kamera</td><td>IDR. 50.000</td></tr>
+        <tr><td>Premium</td><td>1. Fitur Deteksi penyakit melalui kamera,2. Fitur Deteksi penyakit melalui upload gambar</td><td>IDR. 150.000</td></tr>
       </tbody>
     </table>
   </section>
@@ -65,7 +68,7 @@
 
   <section id="dashboard">
     <h2>Dashboard Pengguna</h2>
-    <p>Saldo Anda: <strong>Rp1.000.000</strong></p>
+    <p>Saldo Anda: <strong>IDR. 1.000.000</strong></p>
     <hr>
     
     <div class="container">
@@ -102,7 +105,7 @@
   <section id="topup">
     <h2>Top Up Saldo Crypto</h2>
     <form action="/topup" method="post">
-      <label>Jumlah (Rp):</label><br>
+      <label>Jumlah (IDR):</label><br>
       <input type="number" name="jumlah" required><br><br>
       <label>Pilih Metode Pembayaran:</label><br>
       <select name="metode" required>
@@ -113,6 +116,48 @@
       <button type="submit">Kirim</button>
     </form>
   </section>
+
+<section id="exchange">
+  <h2>Penukaran Data Gambar Penyakit</h2>
+  <form action="/exchange" method="post" enctype="multipart/form-data">
+    <label for="imageUpload">Upload Gambar Penyakit Kulit:</label><br>
+    <input type="file" id="imageUpload" name="image" accept="image/*" required><br><br>
+
+    <label for="tujuanTukar">Pilih Tujuan Penukaran:</label><br>
+    <select id="tujuanTukar" name="tujuan" required>
+      <option value="dokter">Untuk Untuk data medis Rumah Sakit</option>
+      <option value="data_ai">Untuk Pelatihan Model AI</option>
+    </select><br><br>
+
+    <button type="submit">Tukar Sekarang</button>
+  </form>
+</section>
+
+<section id="diseaseprice">
+  <h2>List Disease Exchange Price</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Jenis Data</th>
+        <th>Harga Tukar (Rp)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1. Gambar Penyakit Kulit Ringan</td>
+        <td>IDR. 5.000</td>
+      </tr>
+      <tr>
+        <td>2. Gambar Penyakit Kulit Parah seperti Kanker Kulit</td>
+        <td>IDR. 100.000</td>
+      </tr>
+      <tr>
+        <td>3. Gambar Penyakit Kelamin Parah Seperti Raja Singa dan Kanker Payudara</td>
+        <td>IDR. 200.000</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
 
 
   <script>
