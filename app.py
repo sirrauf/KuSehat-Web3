@@ -4,13 +4,13 @@ import uuid
 import cv2
 import numpy as np
 import requests
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
 from keras.models import load_model
 
 # Konfigurasi Gemini
-GEMINI_API_KEY = "AIzaSyDwniC_zbYaVpRWRGjGk9HnhJWAe9IPZGM"
-MODEL_NAME = "gemini-2.0-flash-lite"
+GEMINI_API_KEY = "AIzaSyDwniC_zbYaVpRWRGjGk9HnhJWAe9IPZGM" # Ganti dengan API Key Anda
+MODEL_NAME = "gemini-1.5-flash" # Model yang lebih baru
 GEMINI_API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL_NAME}:generateContent?key={GEMINI_API_KEY}"
 
 app = Flask(__name__)
@@ -18,37 +18,29 @@ app.config['UPLOAD_FOLDER'] = 'static/uploads'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Load model dan label
-model = load_model("model/keras_Model.h5", compile=False)
-class_names = open("model/labels.txt", "r").readlines()
+try:
+    model = load_model("model/keras_Model.h5", compile=False)
+    with open("model/labels.txt", "r") as f:
+        class_names = f.readlines()
+except IOError as e:
+    print(f"Error loading model or labels: {e}")
+    model = None
+    class_names = []
 
 # 🔹 Fungsi Gemini AI: Jelaskan penyakit berdasarkan nama
 def get_gemini_diagnosis(disease_name):
     prompt = (
-        f"Tolong jelaskan informasi tentang penyakit berikut ini:\n\n"
+        f"Tolong jelaskan informasi tentang penyakit kulit berikut ini dalam format HTML yang rapi:\n\n"
         f"Nama penyakit: {disease_name}\n\n"
         f"Saya ingin tahu:\n"
-        f"- Apa itu penyakit ini?\n"
-        f"- Bagaimana gejala dan penyebabnya?\n"
-        f"- Bagaimana cara penyembuhannya?\n"
-        f"- Obat untuk penyakit ini?\n"
-        f"Jelaskan dengan bahasa awam."
+        f"1.  **Deskripsi**: Apa itu penyakit ini?\n"
+        f"2.  **Gejala dan Penyebab**: Apa saja gejala utamanya dan apa yang menyebabkannya?\n"
+        f"3.  **Cara Penyembuhan**: Bagaimana cara umum untuk menanganinya?\n"
+        f"4.  **Rekomendasi Obat**: Sebutkan contoh obat yang biasa digunakan (jika ada).\n"
+        f"Jelaskan dengan bahasa yang mudah dimengerti oleh orang awam."
     )
-
-    headers = {
-        "Content-Type": "application/json"
-    }
-
-    payload = {
-        "contents": [
-            {
-                "parts": [
-                    {
-                        "text": prompt
-                    }
-                ]
-            }
-        ]
-    }
+    headers = {"Content-Type": "application/json"}
+    payload = {"contents": [{"parts": [{"text": prompt}]}]}
 
     try:
         response = requests.post(GEMINI_API_URL, json=payload, headers=headers)
@@ -60,6 +52,8 @@ def get_gemini_diagnosis(disease_name):
 
 # 🔹 Prediksi gambar dengan Keras
 def predict_keras(image_np):
+    if model is None:
+        return "Model tidak dimuat", 0.0
     image = cv2.resize(image_np, (224, 224), interpolation=cv2.INTER_AREA)
     image = np.asarray(image, dtype=np.float32).reshape(1, 224, 224, 3)
     image = (image / 127.5) - 1
@@ -84,27 +78,28 @@ def detect_disease_with_camera():
     cv2.imwrite(image_path, frame)
 
     predicted_label, confidence = predict_keras(frame)
-    gpt_info = get_gemini_diagnosis(predicted_label)
+    gemini_info = get_gemini_diagnosis(predicted_label)
 
     result = (
         f"📸 Deteksi Kamera: <b>{predicted_label}</b><br>"
         f"🧪 Kepercayaan Model: {confidence:.2%}<br><br>"
-        f"🧠 Gemini AI Menjawab:<br>{gpt_info}"
+        f"🧠 **Penjelasan dari AI:**<br>{gemini_info}"
     )
     return result, image_path
 
 # 🔹 Deteksi lewat upload gambar
 def detect_disease_with_upload(image_path):
-    with open(image_path, "rb") as img_file:
-        b64_image = base64.b64encode(img_file.read()).decode("utf-8")
-
-    predicted_label, confidence = predict_keras(cv2.imread(image_path))
-    gpt_info = get_gemini_diagnosis(predicted_label)
+    image = cv2.imread(image_path)
+    if image is None:
+        return "❌ Gagal membaca file gambar", None
+        
+    predicted_label, confidence = predict_keras(image)
+    gemini_info = get_gemini_diagnosis(predicted_label)
 
     result = (
         f"📤 Deteksi Upload: <b>{predicted_label}</b><br>"
         f"🧪 Kepercayaan Model: {confidence:.2%}<br><br>"
-        f"🧠 Gemini AI Menjawab:<br>{gpt_info}"
+        f"🧠 **Penjelasan dari AI:**<br>{gemini_info}"
     )
     return result
 
