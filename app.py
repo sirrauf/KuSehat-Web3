@@ -83,7 +83,7 @@ def detect_disease_with_camera():
     result = (
         f"📸 Deteksi Kamera: <b>{predicted_label}</b><br>"
         f"🧪 Kepercayaan Model: {confidence:.2%}<br><br>"
-        f"🧠 **Penjelasan dari AI:**<br>{gemini_info}"
+        f"🧠 **Penjelasan dari Gemini AI:**<br>{gemini_info}"
     )
     return result, image_path
 
@@ -99,7 +99,7 @@ def detect_disease_with_upload(image_path):
     result = (
         f"📤 Deteksi Upload: <b>{predicted_label}</b><br>"
         f"🧪 Kepercayaan Model: {confidence:.2%}<br><br>"
-        f"🧠 **Penjelasan dari AI:**<br>{gemini_info}"
+        f"🧠 **Penjelasan dari Gemini AI:**<br>{gemini_info}"
     )
     return result
 
