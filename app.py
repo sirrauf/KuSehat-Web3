@@ -3,24 +3,37 @@ import uuid
 import cv2
 import numpy as np
 import requests
-from flask import Flask, render_template, request
+from datetime import datetime
+from flask import Flask, render_template, request, session, redirect, url_for
 from werkzeug.utils import secure_filename
 from keras.models import load_model
+from pony.orm import Database, Required, Optional, PrimaryKey, db_session
 
 # ─────────────────────────────────────────────
-# 🔹 Konfigurasi Gemini AI
-GEMINI_API_KEY = "AIzaSyDwniC_zbYaVpRWRGjGk9HnhJWAe9IPZGM"  # Ganti dengan API key milikmu
-MODEL_NAME = "gemini-1.5-flash"
-GEMINI_API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL_NAME}:generateContent?key={GEMINI_API_KEY}"
+# 🔹 Database Setup
+db = Database()
+db.bind(provider='mysql', host='localhost', user='root', passwd='', db='kusehat')
+
+class User(db.Entity):
+    _table_ = "user"
+    UserID = PrimaryKey(int, auto=True)
+    NamaUser = Required(str)
+    Email = Required(str, unique=True)
+    Password = Required(str)
+    Register_Date = Required(datetime)
+    Login_Date = Optional(datetime)
+
+db.generate_mapping(create_tables=True)
 
 # ─────────────────────────────────────────────
-# 🔹 Inisialisasi Flask
+# 🔹 Flask Setup
 app = Flask(__name__)
+app.secret_key = 'rahasia_kusehat'
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # ─────────────────────────────────────────────
-# 🔹 Load model Keras & label
+# 🔹 Load AI Model
 try:
     model = load_model("model/keras_Model.h5", compile=False)
     with open("model/labels.txt", "r") as f:
@@ -31,16 +44,16 @@ except Exception as e:
     class_names = []
 
 # ─────────────────────────────────────────────
-# 🔹 Fungsi: Dapatkan penjelasan Gemini AI
+# 🔹 Gemini API
+GEMINI_API_KEY = "AIzaSyDwniC_zbYaVpRWRGjGk9HnhJWAe9IPZGM"
+MODEL_NAME = "gemini-1.5-flash"
+GEMINI_API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL_NAME}:generateContent?key={GEMINI_API_KEY}"
+
 def get_gemini_diagnosis(disease_name):
     prompt = (
         f"Tolong jelaskan informasi tentang penyakit kulit berikut ini dalam format HTML yang rapi:\n\n"
         f"Nama penyakit: {disease_name}\n\n"
-        f"Saya ingin tahu:\n"
-        f"1. Deskripsi\n"
-        f"2. Gejala dan Penyebab\n"
-        f"3. Cara Penyembuhan\n"
-        f"4. Rekomendasi Obat"
+        f"1. Deskripsi\n2. Gejala dan Penyebab\n3. Cara Penyembuhan\n4. Rekomendasi Obat"
     )
     headers = {"Content-Type": "application/json"}
     payload = {"contents": [{"parts": [{"text": prompt}]}]}
@@ -53,7 +66,7 @@ def get_gemini_diagnosis(disease_name):
         return f"❌ Gemini AI gagal memberikan penjelasan: {e}"
 
 # ─────────────────────────────────────────────
-# 🔹 Fungsi: Prediksi gambar dengan model
+# 🔹 AI Detection
 def predict_keras(image_np):
     if model is None:
         return "Model tidak dimuat", 0.0
@@ -66,8 +79,6 @@ def predict_keras(image_np):
     confidence = float(prediction[0][index])
     return class_name, confidence
 
-# ─────────────────────────────────────────────
-# 🔹 Fungsi: Deteksi penyakit dari kamera
 def detect_disease_with_camera():
     cam = cv2.VideoCapture(0)
     if not cam.isOpened():
@@ -91,8 +102,6 @@ def detect_disease_with_camera():
     )
     return result, image_path
 
-# ─────────────────────────────────────────────
-# 🔹 Fungsi: Deteksi penyakit dari gambar upload
 def detect_disease_with_upload(image_path):
     image = cv2.imread(image_path)
     if image is None:
@@ -109,7 +118,7 @@ def detect_disease_with_upload(image_path):
     return result, image_path
 
 # ─────────────────────────────────────────────
-# 🔹 Halaman Beranda/Home
+# 🔹 ROUTES
 @app.route("/", methods=["GET", "POST"])
 def home():
     diagnosis = ""
@@ -126,11 +135,75 @@ def home():
                 image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(image_path)
                 diagnosis, image_path = detect_disease_with_upload(image_path)
-
         elif method == "camera":
             diagnosis, image_path = detect_disease_with_camera()
 
-    return render_template("index.html", diagnosis=diagnosis, image_path=image_path)
+    user = None
+    if "user_id" in session:
+        with db_session:
+            user = User.get(UserID=session["user_id"])
+
+    return render_template("index.html", diagnosis=diagnosis, image_path=image_path, user=user)
+
+@app.route("/register", methods=["POST"])
+@db_session
+def register():
+    nama = request.form.get("nama")
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    if User.get(Email=email):
+        return "❌ Email sudah terdaftar."
+
+    User(
+        NamaUser=nama,
+        Email=email,
+        Password=password,
+        Register_Date=datetime.now()
+    )
+
+    return "✅ Pendaftaran berhasil. Silakan login."
+
+@app.route("/login", methods=["POST"])
+@db_session
+def login():
+    email = request.form.get("email")
+    password = request.form.get("password")
+    user = User.get(Email=email, Password=password)
+
+    if user:
+        session['user_id'] = user.UserID
+        return redirect(url_for("dashboard"))
+    else:
+        return "❌ Email atau Password salah."
+
+@app.route("/dashboard")
+@db_session
+def dashboard():
+    user_id = session.get("user_id")
+    if not user_id:
+        return redirect(url_for("home"))
+
+    user = User.get(UserID=user_id)
+    return render_template("index.html", diagnosis="", image_path="", user=user)
+
+@app.route("/update_user", methods=["POST"])
+@db_session
+def update_user():
+    user_id = session.get("user_id")
+    if not user_id:
+        return redirect(url_for("home"))
+
+    user = User.get(UserID=user_id)
+    user.NamaUser = request.form.get("nama")
+    user.Email = request.form.get("email")
+    user.Password = request.form.get("password")
+    return redirect(url_for("dashboard"))
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("home"))
 
 # ─────────────────────────────────────────────
 if __name__ == "__main__":
