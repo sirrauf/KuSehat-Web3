@@ -44,7 +44,7 @@ except Exception as e:
     class_names = []
 
 # ─────────────────────────────────────────────
-# 🔹 Gemini API
+# 🔹 Gemini AI Setup
 GEMINI_API_KEY = "AIzaSyDwniC_zbYaVpRWRGjGk9HnhJWAe9IPZGM"
 MODEL_NAME = "gemini-1.5-flash"
 GEMINI_API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL_NAME}:generateContent?key={GEMINI_API_KEY}"
@@ -66,7 +66,7 @@ def get_gemini_diagnosis(disease_name):
         return f"❌ Gemini AI gagal memberikan penjelasan: {e}"
 
 # ─────────────────────────────────────────────
-# 🔹 AI Detection
+# 🔹 AI Deteksi Penyakit
 def predict_keras(image_np):
     if model is None:
         return "Model tidak dimuat", 0.0
@@ -97,8 +97,8 @@ def detect_disease_with_camera():
 
     result = (
         f"📸 <b>Deteksi Kamera</b>: <b>{predicted_label}</b><br>"
-        f"🧪 Total Kepercayaan Penyakit: {confidence:.2%}<br><br>"
-        f"🧠 <b>Penjelasan dari Gemini AI:</b><br>{gemini_info}"
+        f"🧪 Kepercayaan: {confidence:.2%}<br><br>"
+        f"🧠 <b>Penjelasan Gemini AI:</b><br>{gemini_info}"
     )
     return result, image_path
 
@@ -112,8 +112,8 @@ def detect_disease_with_upload(image_path):
 
     result = (
         f"📤 <b>Deteksi Upload</b>: <b>{predicted_label}</b><br>"
-        f"🧪 Total Kepercayaan Penyakit: {confidence:.2%}<br><br>"
-        f"🧠 <b>Penjelasan dari Gemini AI:</b><br>{gemini_info}"
+        f"🧪 Kepercayaan: {confidence:.2%}<br><br>"
+        f"🧠 <b>Penjelasan Gemini AI:</b><br>{gemini_info}"
     )
     return result, image_path
 
@@ -125,7 +125,9 @@ def home():
     image_path = ""
 
     if request.method == "POST":
-        method = request.form.get("method")
+        method = request.form.get("method", "")
+        print("📥 Form method:", method)
+
         if method == "upload":
             file = request.files.get("image")
             if not file or file.filename == "":
@@ -135,8 +137,12 @@ def home():
                 image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(image_path)
                 diagnosis, image_path = detect_disease_with_upload(image_path)
+
         elif method == "camera":
             diagnosis, image_path = detect_disease_with_camera()
+
+        else:
+            diagnosis = "❌ Permintaan tidak dikenali."
 
     user = None
     if "user_id" in session:
@@ -161,7 +167,6 @@ def register():
         Password=password,
         Register_Date=datetime.now()
     )
-
     return "✅ Pendaftaran berhasil. Silakan login."
 
 @app.route("/login", methods=["POST"])
@@ -195,9 +200,14 @@ def update_user():
         return redirect(url_for("home"))
 
     user = User.get(UserID=user_id)
+    old_password = request.form.get("old_password")
+
+    if user.Password != old_password:
+        return "❌ Password lama tidak cocok."
+
     user.NamaUser = request.form.get("nama")
     user.Email = request.form.get("email")
-    user.Password = request.form.get("password")
+    user.Password = request.form.get("new_password")
     return redirect(url_for("dashboard"))
 
 @app.route("/logout")
