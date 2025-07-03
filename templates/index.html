@@ -23,6 +23,7 @@
     <a onclick="showSection('login')">Login</a>
     <a onclick="showSection('register')">Daftar</a>
     <a onclick="showSection('dashboard')">Dashboard</a>
+    <a onclick="showSection('edituser')">Ganti Data User</a>
     <a onclick="showSection('topup')">Top Up</a>
     <a onclick="showSection('exchange')">Tukar Gambar</a>
     <a onclick="showSection('diseaseprice')">Harga Penukaran</a>
@@ -73,26 +74,10 @@
 
   <!-- DASHBOARD -->
   <section id="dashboard">
-    <h2>Dashboard Pengguna</h2>
-
     {% if user %}
-      <h3>Selamat Datang, {{ user.NamaUser }}</h3>
-      <p><strong>Email:</strong> {{ user.Email }}</p>
-      <p><strong>Password:</strong> {{ user.Password }}</p>
-
-      <hr>
-      <h3>Ganti Data Pengguna</h3>
-      <form action="/update_user" method="post">
-        <label>Nama Baru:</label><br>
-        <input type="text" name="nama" value="{{ user.NamaUser }}" required><br><br>
-        <label>Email Baru:</label><br>
-        <input type="email" name="email" value="{{ user.Email }}" required><br><br>
-        <label>Password Baru:</label><br>
-        <input type="password" name="password" value="{{ user.Password }}" required><br><br>
-        <button type="submit">Update</button>
-      </form>
+      <h2>Selamat datang {{ user.NamaUser }}</h2>
     {% else %}
-      <p>Silakan login untuk mengakses dashboard.</p>
+      <p>Silakan login terlebih dahulu.</p>
     {% endif %}
 
     <hr>
@@ -100,15 +85,16 @@
       <h3>Deteksi Penyakit Kulit dengan AI</h3>
 
       <form method="POST" enctype="multipart/form-data" id="uploadForm">
+        <input type="hidden" name="method" value="upload"> <!-- Diperbaiki -->
+
         <p><strong>Pilih metode deteksi:</strong></p>
-        
         <button type="button" onclick="aktifkanKamera()">📷 Aktifkan Kamera</button>
         <video id="kamera" width="300" autoplay class="hidden" style="display: block; margin-top: 10px;"></video>
         <br><br>
-        
+
         <p>Atau unggah gambar:</p>
-        <input type="file" name="image" id="gambarInput" accept="image/*" multiple>
-        <input type="submit" name="method" value="upload">
+        <input type="file" name="image" accept="image/*" id="gambarInput" required>
+        <button type="submit">Upload</button>
         <p id="jumlahUpload">Upload ke-0 dari 3</p>
       </form>
 
@@ -125,6 +111,28 @@
         <img src="{{ url_for('static', filename=image_path.split('static/')[-1]) }}" alt="Hasil Gambar" style="max-width: 300px; margin-top: 10px;">
       {% endif %}
     </div>
+  </section>
+
+  <!-- EDIT USER -->
+  <section id="edituser">
+    {% if user %}
+      <h2>Ganti Data User</h2>
+      <form action="/update_user" method="post">
+        <label>Nama User:</label><br>
+        <input type="text" name="nama" value="{{ user.NamaUser }}" required><br><br>
+
+        <label>Email:</label><br>
+        <input type="email" name="email" value="{{ user.Email }}" required><br><br>
+
+        <label>Password Lama:</label><br>
+        <input type="password" name="old_password" required><br><br>
+
+        <label>Password Baru:</label><br>
+        <input type="password" name="new_password" required><br><br>
+
+        <button type="submit">Perbarui Data</button>
+      </form>
+    {% endif %}
   </section>
 
   <!-- TOP UP -->
@@ -204,8 +212,6 @@
 
     let uploadCount = 0;
     document.getElementById("uploadForm").onsubmit = function (e) {
-      if (document.activeElement.value !== 'upload') return;
-
       const files = document.getElementById("gambarInput").files;
       if (uploadCount + files.length > 3) {
         alert("Batas upload gambar hanya 3.");
