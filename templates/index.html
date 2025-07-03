@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>KuSehat - Web3 Frontend</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    nav a { margin-right: 15px; cursor: pointer; }
+    section { display: none; }
+    section.active { display: block; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+    th { background-color: #f2f2f2; }
+    video.hidden { display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- Navigasi -->
+  <nav>
+    <a onclick="showSection('pricing')">Pricing</a>
+    <a onclick="showSection('login')">Login</a>
+    <a onclick="showSection('register')">Daftar</a>
+    <a onclick="showSection('dashboard')">Dashboard</a>
+    <a onclick="showSection('topup')">Top Up</a>
+  </nav>
+
+  <!-- Halaman Pricing -->
+  <section id="pricing" class="active">
+    <h2>Pricing List</h2>
+    <table>
+      <thead>
+        <tr><th>Paket</th><th>Fitur</th><th>Harga</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Basic</td><td>Fitur A, B</td><td>Rp100.000</td></tr>
+        <tr><td>Premium</td><td>Fitur A, B, C</td><td>Rp250.000</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Halaman Login -->
+  <section id="login">
+    <h2>Login</h2>
+    <form action="/login" method="post">
+      <label>Email:</label><br>
+      <input type="email" name="email" required><br><br>
+      <label>Password:</label><br>
+      <input type="password" name="password" required><br><br>
+      <button type="submit">Login</button>
+    </form>
+  </section>
+
+  <!-- Halaman Daftar -->
+  <section id="register">
+    <h2>Daftar Akun</h2>
+    <form action="/register" method="post">
+      <label>Nama:</label><br>
+      <input type="text" name="nama" required><br><br>
+      <label>Email:</label><br>
+      <input type="email" name="email" required><br><br>
+      <label>Password:</label><br>
+      <input type="password" name="password" required><br><br>
+      <button type="submit">Daftar</button>
+    </form>
+  </section>
+
+  <!-- Halaman Dashboard -->
+  <section id="dashboard">
+    <h2>Dashboard Pengguna</h2>
+    <p>Saldo Anda: <strong>Rp1.000.000</strong></p>
+
+    <!-- Tombol Kamera -->
+    <button onclick="aktifkanKamera()">Aktifkan Kamera</button><br><br>
+    <video id="kamera" width="300" autoplay class="hidden"></video>
+
+    <!-- Upload Gambar -->
+    <form id="uploadForm">
+      <input type="file" id="gambarInput" accept="image/*" multiple><br><br>
+      <button type="submit">Upload Gambar</button>
+      <p id="jumlahUpload">Upload ke-0 dari 3</p>
+    </form>
+
+    <!-- Keterangan Tambahan -->
+    <div>
+      <h3>Keterangan Penyakit:</h3>
+      <p>Contoh: Diabetes Tipe 2</p>
+
+      <h3>Cara Penyembuhan:</h3>
+      <p>Olahraga rutin, konsumsi obat secara teratur, dan diet sehat.</p>
+
+      <h3>Keterangan Obat:</h3>
+      <p>Metformin 500mg - diminum 2x sehari setelah makan.</p>
+    </div>
+  </section>
+
+  <!-- Halaman Top Up -->
+  <section id="topup">
+    <h2>Top Up Saldo Crypto</h2>
+    <form action="/topup" method="post">
+      <label>Jumlah (Rp):</label><br>
+      <input type="number" name="jumlah" required><br><br>
+      <label>Pilih Metode Pembayaran:</label><br>
+      <select name="metode" required>
+        <option value="btc">Bitcoin (BTC)</option>
+        <option value="eth">Ethereum (ETH)</option>
+        <option value="usdt">USDT (TRC20)</option>
+      </select><br><br>
+      <button type="submit">Kirim</button>
+    </form>
+  </section>
+
+
+  <!-- Script JavaScript -->
+  <script>
+    function showSection(id) {
+      document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function aktifkanKamera() {
+      const video = document.getElementById("kamera");
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+          video.srcObject = stream;
+          video.classList.remove("hidden");
+        })
+        .catch(err => alert("Kamera tidak bisa diakses."));
+    }
+
+    let uploadCount = 0;
+    document.getElementById("uploadForm").onsubmit = function (e) {
+      e.preventDefault();
+      const files = document.getElementById("gambarInput").files;
+      if (uploadCount + files.length > 3) {
+        alert("Batas upload gambar hanya 3.");
+      } else {
+        uploadCount += files.length;
+        document.getElementById("jumlahUpload").textContent = `Upload ke-${uploadCount} dari 3`;
+        alert("Gambar berhasil disiapkan untuk di-upload.");
+      }
+    }
+  </script>
+</body>
+</html>
