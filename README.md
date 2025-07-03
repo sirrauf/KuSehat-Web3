@@ -16,7 +16,7 @@ Demo KuSehat Website untuk submit World Hacker Code Leage Tampilan melalui Scree
 ![Tampilan KuSehat Submission World The World Computer Hacker League ](https://github.com/sirrauf/KuSehat-Web3/blob/main/Hasil%20tampilan%20Screenshoot/SS%20Demo%20Website%20KuSehat%20Web3%20Only3.png?raw=true)
 ![Tampilan KuSehat Submission World The World Computer Hacker League ](https://github.com/sirrauf/KuSehat-Web3/blob/main/Hasil%20tampilan%20Screenshoot/SS%20Demo%20Website%20KuSehat%20Web3%20Only4.png?raw=true)
 ![Tampilan KuSehat Submission World The World Computer Hacker League ](https://github.com/sirrauf/KuSehat-Web3/blob/main/Hasil%20tampilan%20Screenshoot/SS%20Demo%20Website%20KuSehat%20Web3%20Only5.png?raw=true)
-
+![Tampilan KuSehat Submission World The World Computer Hacker League ](https://github.com/sirrauf/KuSehat-Web3/blob/main/Hasil%20tampilan%20Screenshoot/SS%20Demo%20Website%20KuSehat%20Web3%20Only6.png?raw=true)
 
 Demo KuSehat Website khusus Machine Learning saja tampilan melalui Screenshot:
 
