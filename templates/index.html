@@ -2,8 +2,8 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>KuSehat - Web3 Frontend</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <title>KuSehat Web 3</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/index-style.css') }}">
   <style>
     body { font-family: sans-serif; margin: 20px; }
     nav a { margin-right: 15px; cursor: pointer; }
@@ -13,11 +13,11 @@
     th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
     th { background-color: #f2f2f2; }
     video.hidden { display: none; }
+    .diagnosis { margin-top: 15px; padding: 10px; border: 1px solid #eee; background-color: #f9f9f9; border-radius: 5px; }
   </style>
 </head>
 <body>
 
-  <!-- Navigasi -->
   <nav>
     <a onclick="showSection('pricing')">Pricing</a>
     <a onclick="showSection('login')">Login</a>
@@ -26,7 +26,6 @@
     <a onclick="showSection('topup')">Top Up</a>
   </nav>
 
-  <!-- Halaman Pricing -->
   <section id="pricing" class="active">
     <h2>Pricing List</h2>
     <table>
@@ -40,7 +39,6 @@
     </table>
   </section>
 
-  <!-- Halaman Login -->
   <section id="login">
     <h2>Login</h2>
     <form action="/login" method="post">
@@ -52,7 +50,6 @@
     </form>
   </section>
 
-  <!-- Halaman Daftar -->
   <section id="register">
     <h2>Daftar Akun</h2>
     <form action="/register" method="post">
@@ -66,36 +63,42 @@
     </form>
   </section>
 
-  <!-- Halaman Dashboard -->
   <section id="dashboard">
     <h2>Dashboard Pengguna</h2>
     <p>Saldo Anda: <strong>Rp1.000.000</strong></p>
+    <hr>
+    
+    <div class="container">
+        <h3>Deteksi Penyakit Kulit dengan AI</h3>
 
-    <!-- Tombol Kamera -->
-    <button onclick="aktifkanKamera()">Aktifkan Kamera</button><br><br>
-    <video id="kamera" width="300" autoplay class="hidden"></video>
+        <form method="POST" enctype="multipart/form-data" id="uploadForm">
+            <p><strong>Pilih metode deteksi:</strong></p>
+            
+            <button type="button" onclick="aktifkanKamera()">📷 Aktifkan Kamera</button>
+            <video id="kamera" width="300" autoplay class="hidden" style="display: block; margin-top: 10px;"></video>
+            <br><br>
+            
+            <p>Atau unggah gambar:</p>
+            <input type="file" name="image" id="gambarInput" accept="image/*" multiple>
+            <input type="submit" name="method" value="upload">
+            <p id="jumlahUpload">Upload ke-0 dari 3</p>
+        </form>
 
-    <!-- Upload Gambar -->
-    <form id="uploadForm">
-      <input type="file" id="gambarInput" accept="image/*" multiple><br><br>
-      <button type="submit">Upload Gambar</button>
-      <p id="jumlahUpload">Upload ke-0 dari 3</p>
-    </form>
+        {% if diagnosis %}
+            <hr>
+            <h3>Hasil Diagnosa:</h3>
+            <div class="diagnosis">
+                {{ diagnosis|safe }}
+            </div>
+        {% endif %}
 
-    <!-- Keterangan Tambahan -->
-    <div>
-      <h3>Keterangan Penyakit:</h3>
-      <p>Contoh: Diabetes Tipe 2</p>
-
-      <h3>Cara Penyembuhan:</h3>
-      <p>Olahraga rutin, konsumsi obat secara teratur, dan diet sehat.</p>
-
-      <h3>Keterangan Obat:</h3>
-      <p>Metformin 500mg - diminum 2x sehari setelah makan.</p>
+        {% if image_path %}
+            <p><strong>Gambar yang Dideteksi:</strong></p>
+            <img src="{{ url_for('static', filename=image_path.split('static/')[-1]) }}" alt="Hasil Gambar" style="max-width: 300px; margin-top: 10px;">
+        {% endif %}
     </div>
-  </section>
+    </section>
 
-  <!-- Halaman Top Up -->
   <section id="topup">
     <h2>Top Up Saldo Crypto</h2>
     <form action="/topup" method="post">
@@ -112,7 +115,6 @@
   </section>
 
 
-  <!-- Script JavaScript -->
   <script>
     function showSection(id) {
       document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
@@ -130,15 +132,23 @@
     }
 
     let uploadCount = 0;
+    // Mengikat fungsi ke form dengan ID 'uploadForm'
     document.getElementById("uploadForm").onsubmit = function (e) {
-      e.preventDefault();
+      // Periksa apakah tombol upload yang ditekan, bukan tombol kamera
+      if (document.activeElement.value !== 'upload') {
+        return;
+      }
+      
       const files = document.getElementById("gambarInput").files;
       if (uploadCount + files.length > 3) {
         alert("Batas upload gambar hanya 3.");
+        e.preventDefault(); // Mencegah form untuk submit
       } else {
         uploadCount += files.length;
         document.getElementById("jumlahUpload").textContent = `Upload ke-${uploadCount} dari 3`;
-        alert("Gambar berhasil disiapkan untuk di-upload.");
+        // Tidak mencegah submit jika valid, biarkan form dikirim ke server.
+        // Jika tidak ingin langsung submit, tambahkan alert seperti sebelumnya.
+        // alert("Gambar berhasil disiapkan untuk di-upload.");
       }
     }
   </script>
