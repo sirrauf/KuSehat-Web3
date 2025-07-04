@@ -85,7 +85,6 @@
       <tr>
         <th>Tanggal</th>
         <th>Tujuan</th>
-        <th>Diagnosa</th>
         <th>Reward</th>
         <th>Gambar</th>
       </tr>
@@ -95,7 +94,6 @@
         <tr>
           <td>{{ ex.Tanggal.strftime("%Y-%m-%d %H:%M") }}</td>
           <td>{{ ex.Tujuan }}</td>
-          <td>{{ ex.Diagnosa[:50]|safe }}...</td>
           <td>IDR {{ "%.2f"|format(ex.SaldoReward) }}</td>
           <td><img src="{{ url_for('static', filename='uploads/' + ex.Gambar) }}" width="50"></td>
         </tr>
@@ -107,12 +105,11 @@
 {% endif %}
 
 
-
     <hr>
     <div class="container">
       <h3>Deteksi Penyakit Kulit dengan AI</h3>
 
-      <form method="POST" enctype="multipart/form-data" id="uploadForm">
+      <form method="POST" enctype="multipart/form-data" id="uploadForm" action="/">
         <input type="hidden" name="method" value="upload"> <!-- Diperbaiki -->
 
         <p><strong>Pilih metode deteksi:</strong></p>
@@ -121,8 +118,9 @@
         <br><br>
 
         <p>Atau unggah gambar:</p>
-        <input type="file" name="image" accept="image/*" id="gambarInput" required>
-        <button type="submit">Upload</button>
+        <input type="hidden" name="method" value="upload">
+        <input type="file" name="image" accept="image/*" required><br><br>
+        <button type="submit">Upload dan Diagnosa</button>
         <p id="jumlahUpload">Upload ke-0 dari 3</p>
       </form>
 
