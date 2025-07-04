@@ -7,7 +7,13 @@ from datetime import datetime
 from flask import Flask, render_template, request, session, redirect, url_for
 from werkzeug.utils import secure_filename
 from keras.models import load_model
-from pony.orm import Database, Required, Optional, PrimaryKey, db_session
+from pony.orm import Database, Required, Optional, PrimaryKey, Set, db_session
+from luno_python.client import Client
+
+# 🔐 Konfigurasi API Luno
+LUNO_API_KEY_ID = "ngj6vvfjtxykp"
+LUNO_API_KEY_SECRET = "ANqZRoFWc-te-CUFxsOzMBoQruBvjOMP_RZQGoDDFso"
+luno_client = Client(api_key_id=LUNO_API_KEY_ID, api_key_secret=LUNO_API_KEY_SECRET)
 
 # ─────────────────────────────────────────────
 # 🔹 Database Setup
@@ -22,6 +28,16 @@ class User(db.Entity):
     Password = Required(str)
     Register_Date = Required(datetime)
     Login_Date = Optional(datetime)
+    Saldo = Required(float, default=0.0)
+    topups = Set("TopUp")  # ✅ Reverse relasi TopUp
+
+class TopUp(db.Entity):
+    _table_ = "topup"
+    ID = PrimaryKey(int, auto=True)
+    User = Required(User)
+    Jumlah = Required(float)
+    Metode = Required(str)
+    Tanggal = Required(datetime)
 
 db.generate_mapping(create_tables=True)
 
@@ -126,8 +142,6 @@ def home():
 
     if request.method == "POST":
         method = request.form.get("method", "")
-        print("📥 Form method:", method)
-
         if method == "upload":
             file = request.files.get("image")
             if not file or file.filename == "":
@@ -137,10 +151,8 @@ def home():
                 image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(image_path)
                 diagnosis, image_path = detect_disease_with_upload(image_path)
-
         elif method == "camera":
             diagnosis, image_path = detect_disease_with_camera()
-
         else:
             diagnosis = "❌ Permintaan tidak dikenali."
 
@@ -149,7 +161,8 @@ def home():
         with db_session:
             user = User.get(UserID=session["user_id"])
 
-    return render_template("index.html", diagnosis=diagnosis, image_path=image_path, user=user)
+    return render_template("index.html", diagnosis=diagnosis, image_path=image_path,
+                           user=user, topup_address="", topup_error="")
 
 @app.route("/register", methods=["POST"])
 @db_session
@@ -190,7 +203,8 @@ def dashboard():
         return redirect(url_for("home"))
 
     user = User.get(UserID=user_id)
-    return render_template("index.html", diagnosis="", image_path="", user=user)
+    return render_template("index.html", diagnosis="", image_path="", user=user,
+                           topup_address="", topup_error="")
 
 @app.route("/update_user", methods=["POST"])
 @db_session
@@ -209,6 +223,41 @@ def update_user():
     user.Email = request.form.get("email")
     user.Password = request.form.get("new_password")
     return redirect(url_for("dashboard"))
+
+@app.route("/topup", methods=["POST"])
+@db_session
+def topup():
+    user_id = session.get("user_id")
+    if not user_id:
+        return redirect(url_for("home"))
+
+    metode = request.form.get("metode")
+    jumlah = float(request.form.get("jumlah", 0))
+    alamat = ""
+    error = ""
+
+    try:
+        if metode == "btc":
+            res = luno_client.get_funding_address(asset="XBT")
+            alamat = res["address"]
+        elif metode == "eth":
+            res = luno_client.get_funding_address(asset="ETH")
+            alamat = res["address"]
+        elif metode == "usdt":
+            error = "❌ USDT (TRC20) belum didukung oleh Luno API."
+        else:
+            error = "❌ Metode tidak valid."
+    except Exception as e:
+        error = f"❌ Gagal mengambil alamat: {str(e)}"
+
+    user = User.get(UserID=user_id)
+
+    if not error:
+        TopUp(User=user, Jumlah=jumlah, Metode=metode.upper(), Tanggal=datetime.now())
+        user.Saldo += jumlah
+
+    return render_template("index.html", diagnosis="", image_path="", user=user,
+                           topup_address=alamat, topup_error=error)
 
 @app.route("/logout")
 def logout():
