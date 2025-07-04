@@ -77,7 +77,7 @@ def get_gemini_diagnosis(disease_name):
         response = requests.post(GEMINI_API_URL, json=payload, headers=headers)
         response.raise_for_status()
         data = response.json()
-        return data['candidates'][0]['content']['parts'][0]['text']
+        return data.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "")
     except Exception as e:
         return f"❌ Gemini AI gagal memberikan penjelasan: {e}"
 
@@ -94,6 +94,7 @@ def predict_keras(image_np):
     class_name = class_names[index].strip()
     confidence = float(prediction[0][index])
     return class_name, confidence
+
 
 def detect_disease_with_camera():
     cam = cv2.VideoCapture(0)
@@ -119,19 +120,35 @@ def detect_disease_with_camera():
     return result, image_path
 
 def detect_disease_with_upload(image_path):
-    image = cv2.imread(image_path)
-    if image is None:
-        return "❌ Gagal membaca gambar", None
+    try:
+        # Validasi gambar
+        image = cv2.imread(image_path)
+        if image is None or image.size == 0:
+            return "❌ Gagal membaca gambar. Pastikan file yang diupload adalah gambar valid.", None
 
-    predicted_label, confidence = predict_keras(image)
-    gemini_info = get_gemini_diagnosis(predicted_label)
+        # Prediksi menggunakan model AI
+        predicted_label, confidence = predict_keras(image)
+        if not predicted_label or confidence < 0.5:
+            return (
+                f"❌ Model tidak yakin dengan prediksi penyakit. "
+                f"Silakan upload gambar yang lebih jelas. (Confidence: {confidence:.2%})", None)
 
-    result = (
-        f"📤 <b>Deteksi Upload</b>: <b>{predicted_label}</b><br>"
-        f"🧪 Kepercayaan: {confidence:.2%}<br><br>"
-        f"🧠 <b>Penjelasan Gemini AI:</b><br>{gemini_info}"
-    )
-    return result, image_path
+        # Penjelasan dari Gemini AI
+        gemini_info = get_gemini_diagnosis(predicted_label)
+        if not gemini_info or "❌" in gemini_info:
+            gemini_info = "<i>(Penjelasan tidak tersedia saat ini. Coba lagi nanti.)</i>"
+
+        # Format hasil
+        result = (
+            f"📤 <b>Deteksi Upload:</b> <b>{predicted_label}</b><br>"
+            f"🧪 <b>Kepercayaan:</b> {confidence:.2%}<br><br>"
+            f"🧠 <b>Penjelasan Gemini AI:</b><br>{gemini_info}"
+        )
+        return result, image_path
+
+    except Exception as e:
+        return f"❌ Terjadi kesalahan saat memproses gambar: {str(e)}", None
+
 
 # ─────────────────────────────────────────────
 # 🔹 ROUTES
@@ -144,8 +161,9 @@ def home():
         method = request.form.get("method", "")
         if method == "upload":
             file = request.files.get("image")
-            if not file or file.filename == "":
-                diagnosis = "❌ Gambar tidak ditemukan."
+            if not file.filename.lower().endswith((".jpg", ".jpeg", ".png")):
+                diagnosis = "❌ Format file tidak didukung. Gunakan JPG, JPEG, atau PNG."
+
             else:
                 filename = secure_filename(file.filename)
                 image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
