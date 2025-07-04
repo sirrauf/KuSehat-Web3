@@ -1,13 +1,8 @@
 # KuSehat Web
 KuSehat adalah website inovasi teknologi kesehatan menggunakan teknologi modern yaitu AI Chat GPT, Machine Learning,dan Object Real-time Detection untuk submission The World Computer Hacker League.
 
+[Video Demo Website KuSehat Web3]()
 
-Demo Live Website:
-
-[Live Website KuSehat Web3](http://kusehatweb3.kusehat.co.id/)
-
-
-[Live Website KuSehat ML](http://kusehatml.kusehat.co.id/)
 
 Feature:
 1. Daftar akun pengguna/daftar pasien.
@@ -29,7 +24,7 @@ Demo KuSehat Website untuk submit World Hacker Code Leage Tampilan melalui Scree
 ![Tampilan KuSehat Submission World The World Computer Hacker League ](https://github.com/sirrauf/KuSehat-Web3/blob/main/Hasil%20tampilan%20Screenshoot/SS%20Demo%20Website%20KuSehat%20Web3%20Only8.png?raw=true)
 ![Tampilan KuSehat Submission World The World Computer Hacker League ](https://github.com/sirrauf/KuSehat-Web3/blob/main/Hasil%20tampilan%20Screenshoot/SS%20Demo%20Website%20KuSehat%20Web3%20Only9.png?raw=true)
 ![Tampilan KuSehat Submission World The World Computer Hacker League ](https://github.com/sirrauf/KuSehat-Web3/blob/main/Hasil%20tampilan%20Screenshoot/SS%20Demo%20Website%20KuSehat%20Web3%20Only10.png?raw=true)
-
+![Tampilan KuSehat Submission World The World Computer Hacker League ](https://github.com/sirrauf/KuSehat-Web3/blob/main/Hasil%20tampilan%20Screenshoot/SS%20Demo%20Website%20KuSehat%20Web3%20Only11.png?raw=true)
 
 Demo KuSehat Website khusus Machine Learning saja tampilan melalui Screenshot:
 
