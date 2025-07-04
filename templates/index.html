@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>KuSehat Web 3</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/index-style.css') }}">
   <style>
     body { font-family: sans-serif; margin: 20px; }
     nav a { margin-right: 15px; cursor: pointer; }
@@ -74,11 +74,13 @@
 
   <!-- DASHBOARD -->
   <section id="dashboard">
-    {% if user %}
-      <h2>Selamat datang {{ user.NamaUser }}</h2>
-    {% else %}
-      <p>Silakan login terlebih dahulu.</p>
-    {% endif %}
+  {% if user %}
+    <h2>Selamat datang {{ user.NamaUser }}</h2>
+    <p><strong>Saldo Anda:</strong> IDR {{ "%.2f"|format(user.Saldo) }}</p>
+  {% else %}
+    <p>Silakan login terlebih dahulu.</p>
+  {% endif %}
+
 
     <hr>
     <div class="container">
@@ -135,21 +137,31 @@
     {% endif %}
   </section>
 
-  <!-- TOP UP -->
-  <section id="topup">
-    <h2>Top Up Saldo Crypto</h2>
-    <form action="/topup" method="post">
-      <label>Jumlah (IDR):</label><br>
-      <input type="number" name="jumlah" required><br><br>
-      <label>Pilih Metode Pembayaran:</label><br>
-      <select name="metode" required>
-        <option value="btc">Bitcoin (BTC)</option>
-        <option value="eth">Ethereum (ETH)</option>
-        <option value="usdt">USDT (TRC20)</option>
-      </select><br><br>
-      <button type="submit">Kirim</button>
-    </form>
-  </section>
+ <!-- TOP UP -->
+<section id="topup">
+  <h2>Top Up Saldo Crypto</h2>
+  <form action="/topup" method="post">
+    <label>Jumlah (IDR):</label><br>
+    <input type="number" name="jumlah" required><br><br>
+    <label>Pilih Metode Pembayaran:</label><br>
+    <select name="metode" required>
+      <option value="btc">Bitcoin (BTC)</option>
+      <option value="eth">Ethereum (ETH)</option>
+    </select><br><br>
+    <button type="submit">Kirim</button>
+  </form>
+
+  {% if topup_address %}
+    <h3>🔐 Alamat Deposit:</h3>
+    <p>Silakan kirim aset kripto ke alamat berikut:</p>
+    <code>{{ topup_address }}</code>
+  {% endif %}
+
+  {% if topup_error %}
+    <p style="color:red;">{{ topup_error }}</p>
+  {% endif %}
+</section>
+
 
   <!-- EXCHANGE -->
   <section id="exchange">
