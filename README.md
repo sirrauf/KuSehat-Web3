@@ -42,6 +42,8 @@ Demo KuSehat Website khusus Machine Learning saja tampilan melalui Screenshot:
 2. Install dan Setting Enviroment Variabel di path sistem, contoh path Python ditambahkan ke path sistem: C://Python310/Scripts,C://Python31011/Lib,dan C://Python310
 3. [Download Visual Studion Code dan Install](https://code.visualstudio.com/)
 4. Install extension Python di Visual Studio Code.
+5. [Download Laragon](https://github.com/leokhoa/laragon/releases/download/6.0.0/laragon-wamp.exe)
+6. Install Laragon dan tambahkan database kusehat di laragon.
 
 # Cara run server website di Lokal Laptop 
 1. [Download Python Versi 3.10.11](https://www.python.org/downloads/release/python-31011/)
@@ -51,9 +53,11 @@ Demo KuSehat Website khusus Machine Learning saja tampilan melalui Screenshot:
 5. Setelah itu,ketik di Command prompt didalam folder project: activate.bat
 6. Ketika Virtual Enviroment Machine sudah aktif,ketik di Command Prompt: cd.. sebanyak 2 kali.
 7. Kemudian install library Python dalam requirement.txt,ketik perintah di Command prompt dalam folder project: pip install -r requirement.txt
-8. [Download Docker](https://www.docker.com/products/docker-desktop/)
-9. Install dan Buka Docker kemudian jalankan file DOCKERFILE didalam Docker.
-10. Tanpa Docker: ketik flask run
+8. [Download Laragon](https://github.com/leokhoa/laragon/releases/download/6.0.0/laragon-wamp.exe)
+9. Install Laragon dan tambahkan database kusehat di laragon.
+10. [Download Docker](https://www.docker.com/products/docker-desktop/)
+11. Install dan Buka Docker kemudian jalankan file DOCKERFILE didalam Docker.
+12. Tanpa Docker: ketik flask run
 
 
 # Ada kendala? hubungi kontak dibawah ini:
