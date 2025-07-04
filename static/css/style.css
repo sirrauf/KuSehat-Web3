@@ -1,108 +1,130 @@
+/* ==== Warna Dasar dan Layout ==== */
 body {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f0f8ff;
   margin: 20px;
-  background-color: #fdfdfd;
   color: #333;
 }
 
 nav {
+  background-color: #e0f0ff;
+  padding: 10px 15px;
+  border-radius: 8px;
   margin-bottom: 20px;
 }
 
 nav a {
   margin-right: 15px;
   text-decoration: none;
-  color: #007bff;
+  color: #0077cc;
   font-weight: bold;
-  transition: color 0.3s;
+  padding: 6px 10px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
 }
 
 nav a:hover {
-  color: #0056b3;
+  background-color: #cce5ff;
+  color: #005fa3;
 }
 
+/* ==== Section ==== */
 section {
   display: none;
   padding: 20px;
-  background: #fff;
-  border: 1px solid #eee;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  margin-bottom: 30px;
+  background-color: #ffffff;
+  border: 1px solid #b3d7ff;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.1);
+  margin-bottom: 20px;
 }
 
 section.active {
   display: block;
 }
 
-h2 {
-  border-bottom: 2px solid #ddd;
-  padding-bottom: 5px;
-  margin-bottom: 20px;
-}
-
-form {
+/* ==== Table ==== */
+table {
+  width: 100%;
+  border-collapse: collapse;
   margin-top: 10px;
+  background-color: #fff;
 }
 
-form label {
-  font-weight: bold;
+th, td {
+  border: 1px solid #cce0f5;
+  padding: 12px;
+  text-align: left;
 }
 
+th {
+  background-color: #e6f2ff;
+  color: #003366;
+}
+
+/* ==== Form ==== */
 form input[type="text"],
 form input[type="email"],
 form input[type="password"],
 form input[type="number"],
 form select {
   width: 100%;
-  padding: 8px;
-  margin-top: 4px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
+  max-width: 400px;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #cce5ff;
   border-radius: 5px;
+  box-sizing: border-box;
 }
 
 form button {
-  background-color: #007bff;
+  background-color: #0077cc;
   color: white;
-  padding: 10px 15px;
+  padding: 10px 20px;
   border: none;
+  font-weight: bold;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 form button:hover {
-  background-color: #0056b3;
+  background-color: #005fa3;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
+/* ==== Diagnosis Box ==== */
+.diagnosis {
+  margin-top: 15px;
+  padding: 15px;
+  border: 1px solid #b3d7ff;
+  background-color: #eaf6ff;
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1.5;
 }
 
-th, td {
-  border: 1px solid #ccc;
-  padding: 10px;
-  text-align: left;
+/* ==== Code Box (alamat BTC, dll) ==== */
+code {
+  display: block;
+  background-color: #eef6ff;
+  padding: 12px;
+  margin-top: 12px;
+  border-left: 5px solid #0077cc;
+  font-size: 1.1em;
+  word-break: break-word;
+  color: #003366;
 }
 
-th {
-  background-color: #f2f2f2;
-}
-
+/* ==== Video Kamera ==== */
 video.hidden {
   display: none;
 }
 
-.diagnosis {
-  margin-top: 15px;
-  padding: 10px;
-  border: 1px solid #eee;
-  background-color: #f9f9f9;
-  border-radius: 5px;
+/* ==== Tombol Kamera ==== */
+button[type="button"] {
+  background-color: #00aaff;
 }
 
-.container {
-  margin-top: 30px;
+button[type="button"]:hover {
+  background-color: #008ecc;
 }
