@@ -71,10 +71,15 @@ def home():
             return redirect(url_for("home"))
 
         today = date.today()
-        upload_count = select(e for e in Exchange if e.User == user and e.Tanggal.date() == today).count()
+        upload_count = select(e for e in Exchange if e.User == user and e.Tanggal.date() == today and e.Tujuan == "deteksi").count()
 
+        # Check if user has Premium (saldo >= 150000) or is still within free 3 uploads
         if upload_count >= 3:
-            return redirect(url_for("topup_page"))
+            if user.Saldo >= 150000:
+                user.Saldo -= 150000  # Charge user once for premium access
+                upload_count = 0  # reset or ignore limit
+            else:
+                return redirect(url_for("topup_page"))
 
         file = request.files.get("image")
         method = request.form.get("method", "")
@@ -128,7 +133,7 @@ def home():
                 diagnosis = f"❌ Terjadi kesalahan saat proses AI: {e}"
 
     return render_template("index.html", diagnosis=diagnosis, image_path=image_path,
-                           user=user, topup_address="", topup_error="")
+                           user=user, topup_address="", topup_error="", section="dashboard", today=date.today())
 
 @app.route("/register", methods=["POST"])
 @db_session
@@ -190,8 +195,7 @@ def topup_page():
         return redirect(url_for("home"))
     user = User.get(UserID=user_id)
     return render_template("index.html", diagnosis="", image_path="", user=user,
-                           topup_address="", topup_error="")
-    
+                           topup_address="", topup_error="", section="topup")
     
 @app.route("/topup", methods=["POST"])
 @db_session
