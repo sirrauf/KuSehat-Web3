@@ -1,5 +1,13 @@
 # KuSehat Web
-KuSehat adalah website inovasi teknologi kesehatan menggunakan teknologi modern yaitu AI Chat GPT, Machine Learning,dan Object Real-time Detection untuk submission The World Computer Hacker League.
+KuSehat adalah website inovasi teknologi kesehatan yaitu Deteksi Penyakit  menggunakan teknologi modern yaitu AI Gemini, Machine Learning:  Keras,Tensorflow,Numpy,dan Object Real-time Detection: Open CV untuk submission The World Computer Hacker League.
+
+Nama anggota tim: Ananda Technology Solution(AnTS Groups)
+
+Anggota tim:
+1. Ananda Rauf Maududi sebagai ketua tim Backend dan Ketua tim.
+2. Ruben Hanjrahing Puspito sebagai Front End tim.
+3. Eries Fierza sebagai Back-End tim.
+4. Unggar Madi sebagai Design UI UX tim.
 
 [Video Demo Website KuSehat Web3]()
 
