@@ -1,5 +1,7 @@
-# KuSehat Web
+# KuSehat Disease Detection Exchange Web3 Machine Learning Submssion World Hacker Code League
 KuSehat adalah website inovasi teknologi kesehatan yaitu Deteksi Penyakit  menggunakan teknologi modern yaitu AI Gemini, Machine Learning:  Keras,Tensorflow,Numpy,dan Object Real-time Detection: Open CV untuk submission The World Computer Hacker League.
+
+Tujuan proyek KuSehat adalah menciptakan sebuah platform kesehatan digital berbasis Machine Learning dan Web3 yang mampu mendeteksi penyakit secara dini, serta memungkinkan pertukaran data medis yang aman, terdesentralisasi, dan menghargai privasi pengguna.
 
 Nama anggota tim: Ananda Technology Solution(AnTS Groups)
 
@@ -9,7 +11,7 @@ Anggota tim:
 3. Eries Fierza sebagai Back-End tim.
 4. Unggar Madi sebagai Design UI UX tim.
 
-[Video Demo Website KuSehat Web3]()
+[Video Demo Website KuSehat Web3](https://www.youtube.com/watch?v=fVP2rikjsac)
 
 
 Feature:
