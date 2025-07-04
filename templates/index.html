@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>KuSehat Web 3</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/index-style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <style>
     body { font-family: sans-serif; margin: 20px; }
     nav a { margin-right: 15px; cursor: pointer; }
@@ -16,6 +16,18 @@
     .diagnosis { margin-top: 15px; padding: 10px; border: 1px solid #eee; background-color: #f9f9f9; border-radius: 5px; }
   </style>
 </head>
+<script>
+  const sectionFromServer = "{{ section|default('pricing') }}";
+  window.onload = function () {
+    showSection(sectionFromServer);
+
+    // Hitung jumlah upload hari ini dari server (jika user login)
+    {% if user %}
+      const uploadToday = {{ user.exchanges | selectattr('Tanggal.date()', 'equalto', today) | list | length }};
+      document.getElementById("jumlahUpload").textContent = `Upload ke-${uploadToday} dari 3`;
+    {% endif %}
+  };
+</script>
 <body>
 
   <nav>
@@ -74,15 +86,16 @@
 
   <!-- DASHBOARD -->
   <section id="dashboard">
-  {% if user %}
+{% if user %}
   <h2>Selamat datang {{ user.NamaUser }}</h2>
   <p><strong>Saldo Anda:</strong> IDR {{ "%.2f"|format(user.Saldo) }}</p>
 {% endif %}
 <h3>Riwayat Penukaran Gambar</h3>
-{% if user.exchanges %}
+{% if user and user.exchanges %}
   <table>
     <thead>
       <tr>
+        <th>Nama User</th>
         <th>Tanggal</th>
         <th>Tujuan</th>
         <th>Reward</th>
@@ -92,6 +105,7 @@
     <tbody>
       {% for ex in user.exchanges %}
         <tr>
+          <td>{{ user.NamaUser }}</td>
           <td>{{ ex.Tanggal.strftime("%Y-%m-%d %H:%M") }}</td>
           <td>{{ ex.Tujuan }}</td>
           <td>IDR {{ "%.2f"|format(ex.SaldoReward) }}</td>
@@ -104,40 +118,38 @@
   <p>Belum ada penukaran gambar.</p>
 {% endif %}
 
+<hr>
+<div class="container">
+  <h3>Deteksi Penyakit Kulit dengan AI</h3>
 
+  <form method="POST" enctype="multipart/form-data" id="uploadForm" action="/">
+    <input type="hidden" name="method" value="upload">
+
+    <p><strong>Pilih metode deteksi:</strong></p>
+    <button type="button" onclick="aktifkanKamera()">📷 Aktifkan Kamera</button>
+    <video id="kamera" width="300" autoplay class="hidden" style="display: block; margin-top: 10px;"></video>
+    <br><br>
+
+    <p>Atau unggah gambar:</p>
+    <input type="file" name="image" id="gambarInput" accept="image/*" required><br><br>
+    <button type="submit">Upload dan Diagnosa</button>
+    <p id="jumlahUpload">Upload ke-0 dari 3</p>
+  </form>
+
+  {% if diagnosis %}
     <hr>
-    <div class="container">
-      <h3>Deteksi Penyakit Kulit dengan AI</h3>
-
-      <form method="POST" enctype="multipart/form-data" id="uploadForm" action="/">
-        <input type="hidden" name="method" value="upload"> <!-- Diperbaiki -->
-
-        <p><strong>Pilih metode deteksi:</strong></p>
-        <button type="button" onclick="aktifkanKamera()">📷 Aktifkan Kamera</button>
-        <video id="kamera" width="300" autoplay class="hidden" style="display: block; margin-top: 10px;"></video>
-        <br><br>
-
-        <p>Atau unggah gambar:</p>
-        <input type="hidden" name="method" value="upload">
-        <input type="file" name="image" accept="image/*" required><br><br>
-        <button type="submit">Upload dan Diagnosa</button>
-        <p id="jumlahUpload">Upload ke-0 dari 3</p>
-      </form>
-
-      {% if diagnosis %}
-        <hr>
-        <h3>Hasil Diagnosa:</h3>
-        <div class="diagnosis">
-          {{ diagnosis|safe }}
-        </div>
-      {% endif %}
-
-      {% if image_path %}
-        <p><strong>Gambar yang Dideteksi:</strong></p>
-        <img src="{{ url_for('static', filename=image_path.split('static/')[-1]) }}" alt="Hasil Gambar" style="max-width: 300px; margin-top: 10px;">
-      {% endif %}
+    <h3>Hasil Diagnosa:</h3>
+    <div class="diagnosis">
+      {{ diagnosis|safe }}
     </div>
-  </section>
+  {% endif %}
+
+  {% if image_path %}
+    <p><strong>Gambar yang Dideteksi:</strong></p>
+    <img src="{{ url_for('static', filename=image_path.split('static/')[-1]) }}" alt="Hasil Gambar" style="max-width: 300px; margin-top: 10px;">
+  {% endif %}
+</div>
+</section>
 
   <!-- EDIT USER -->
   <section id="edituser">
