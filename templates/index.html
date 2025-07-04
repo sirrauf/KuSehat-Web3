@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>KuSehat Web 3</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/index-style.css') }}">
   <style>
     body { font-family: sans-serif; margin: 20px; }
     nav a { margin-right: 15px; cursor: pointer; }
@@ -89,6 +89,13 @@
 {% if user %}
   <h2>Selamat datang {{ user.NamaUser }}</h2>
   <p><strong>Saldo Anda:</strong> IDR {{ "%.2f"|format(user.Saldo) }}</p>
+
+  {% set upload_count = user.exchanges | selectattr('Tujuan', 'equalto', 'deteksi') | selectattr('Tanggal.date()', 'equalto', today) | list | length %}
+  {% if user.Saldo >= 150000 or upload_count >= 3 %}
+    <p style="color: green; font-weight: bold;">🛡️ Paket Premium Aktif</p>
+  {% elif upload_count < 3 %}
+    <p style="color: blue; font-weight: bold;">🔰 Paket Basic Aktif</p>
+  {% endif %}
 {% endif %}
 <h3>Riwayat Penukaran Gambar</h3>
 {% if user and user.exchanges %}
