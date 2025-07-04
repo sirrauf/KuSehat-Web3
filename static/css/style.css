@@ -1,130 +1,117 @@
-/* ==== Warna Dasar dan Layout ==== */
+/* ====== Warna Umum ====== */
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f0f8ff;
+  font-family: 'Segoe UI', sans-serif;
   margin: 20px;
-  color: #333;
+  background-color: #f0f8ff;
+  color: #222;
 }
 
 nav {
-  background-color: #e0f0ff;
+  background-color: #007bff;
   padding: 10px 15px;
-  border-radius: 8px;
+  border-radius: 5px;
   margin-bottom: 20px;
 }
 
 nav a {
   margin-right: 15px;
-  text-decoration: none;
-  color: #0077cc;
+  color: white;
   font-weight: bold;
-  padding: 6px 10px;
+  text-decoration: none;
+  padding: 6px 12px;
   border-radius: 4px;
-  transition: background-color 0.3s;
 }
 
 nav a:hover {
-  background-color: #cce5ff;
-  color: #005fa3;
+  background-color: #0056b3;
 }
 
-/* ==== Section ==== */
 section {
   display: none;
+  background: white;
   padding: 20px;
-  background-color: #ffffff;
-  border: 1px solid #b3d7ff;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.1);
-  margin-bottom: 20px;
+  border-radius: 8px;
+  border: 1px solid #cce;
+  box-shadow: 0 2px 8px rgba(0, 0, 255, 0.1);
 }
 
 section.active {
   display: block;
 }
 
-/* ==== Table ==== */
+/* ====== Tabel ====== */
 table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
-  background-color: #fff;
 }
 
 th, td {
-  border: 1px solid #cce0f5;
-  padding: 12px;
+  border: 1px solid #ccc;
+  padding: 10px;
   text-align: left;
 }
 
 th {
-  background-color: #e6f2ff;
-  color: #003366;
+  background-color: #cce5ff;
+  color: #004085;
 }
 
-/* ==== Form ==== */
-form input[type="text"],
-form input[type="email"],
-form input[type="password"],
-form input[type="number"],
-form select {
+td {
+  background-color: #e9f5ff;
+}
+
+/* ====== Form ====== */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+select,
+input[type="file"] {
   width: 100%;
-  max-width: 400px;
-  padding: 10px;
-  margin: 8px 0;
-  border: 1px solid #cce5ff;
-  border-radius: 5px;
-  box-sizing: border-box;
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border: 1px solid #007bff;
+  border-radius: 4px;
 }
 
-form button {
-  background-color: #0077cc;
+button {
+  background-color: #007bff;
   color: white;
-  padding: 10px 20px;
   border: none;
-  font-weight: bold;
-  border-radius: 5px;
+  padding: 10px 18px;
+  border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  font-weight: bold;
 }
 
-form button:hover {
-  background-color: #005fa3;
+button:hover {
+  background-color: #0056b3;
 }
 
-/* ==== Diagnosis Box ==== */
+/* ====== Diagnosis Box ====== */
 .diagnosis {
   margin-top: 15px;
   padding: 15px;
-  border: 1px solid #b3d7ff;
-  background-color: #eaf6ff;
-  border-radius: 8px;
-  font-size: 15px;
-  line-height: 1.5;
+  border: 1px solid #b8daff;
+  background-color: #d1ecf1;
+  border-radius: 5px;
+  color: #0c5460;
 }
 
-/* ==== Code Box (alamat BTC, dll) ==== */
-code {
-  display: block;
-  background-color: #eef6ff;
-  padding: 12px;
-  margin-top: 12px;
-  border-left: 5px solid #0077cc;
-  font-size: 1.1em;
-  word-break: break-word;
-  color: #003366;
-}
-
-/* ==== Video Kamera ==== */
+/* ====== Video (Kamera) ====== */
 video.hidden {
   display: none;
 }
 
-/* ==== Tombol Kamera ==== */
-button[type="button"] {
-  background-color: #00aaff;
+video {
+  border: 2px solid #007bff;
+  border-radius: 4px;
 }
 
-button[type="button"]:hover {
-  background-color: #008ecc;
+/* ====== Gambar Kecil di Tabel Riwayat ====== */
+table img {
+  border-radius: 3px;
+  border: 1px solid #ccc;
 }
