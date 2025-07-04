@@ -74,7 +74,7 @@ def home():
         upload_count = select(e for e in Exchange if e.User == user and e.Tanggal.date() == today).count()
 
         if upload_count >= 3:
-            return redirect(url_for("topup"))
+            return redirect(url_for("topup_page"))
 
         file = request.files.get("image")
         method = request.form.get("method", "")
@@ -122,7 +122,6 @@ def home():
                     f"🧠 <b>Penjelasan Gemini AI:</b><br>{gemini_info}"
                 )
 
-                # Simpan record Exchange tanpa reward jika hanya deteksi
                 Exchange(User=user, Tujuan="deteksi", Gambar=filename, Diagnosa=class_name, Tanggal=datetime.now(), SaldoReward=0.0)
 
             except Exception as e:
@@ -130,7 +129,6 @@ def home():
 
     return render_template("index.html", diagnosis=diagnosis, image_path=image_path,
                            user=user, topup_address="", topup_error="")
-
 
 @app.route("/register", methods=["POST"])
 @db_session
@@ -184,6 +182,17 @@ def update_user():
     user.Password = request.form.get("new_password")
     return redirect(url_for("dashboard"))
 
+@app.route("/topup", methods=["GET"])
+@db_session
+def topup_page():
+    user_id = session.get("user_id")
+    if not user_id:
+        return redirect(url_for("home"))
+    user = User.get(UserID=user_id)
+    return render_template("index.html", diagnosis="", image_path="", user=user,
+                           topup_address="", topup_error="")
+    
+    
 @app.route("/topup", methods=["POST"])
 @db_session
 def topup():
