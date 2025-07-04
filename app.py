@@ -3,11 +3,11 @@ import uuid
 import cv2
 import numpy as np
 import requests
-from datetime import datetime
+from datetime import datetime, date
 from flask import Flask, render_template, request, session, redirect, url_for
 from werkzeug.utils import secure_filename
 from keras.models import load_model
-from pony.orm import Database, Required, Optional, PrimaryKey, Set, db_session
+from pony.orm import Database, Required, Optional, PrimaryKey, Set, db_session, select
 from luno_python.client import Client
 
 # Luno API Setup
@@ -61,8 +61,21 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 def home():
     diagnosis = ""
     image_path = ""
+    user = None
+
+    if "user_id" in session:
+        user = User.get(UserID=session["user_id"])
 
     if request.method == "POST" and "image" in request.files:
+        if not user:
+            return redirect(url_for("home"))
+
+        today = date.today()
+        upload_count = select(e for e in Exchange if e.User == user and e.Tanggal.date() == today).count()
+
+        if upload_count >= 3:
+            return redirect(url_for("topup"))
+
         file = request.files.get("image")
         method = request.form.get("method", "")
 
@@ -109,12 +122,11 @@ def home():
                     f"🧠 <b>Penjelasan Gemini AI:</b><br>{gemini_info}"
                 )
 
+                # Simpan record Exchange tanpa reward jika hanya deteksi
+                Exchange(User=user, Tujuan="deteksi", Gambar=filename, Diagnosa=class_name, Tanggal=datetime.now(), SaldoReward=0.0)
+
             except Exception as e:
                 diagnosis = f"❌ Terjadi kesalahan saat proses AI: {e}"
-
-    user = None
-    if "user_id" in session:
-        user = User.get(UserID=session["user_id"])
 
     return render_template("index.html", diagnosis=diagnosis, image_path=image_path,
                            user=user, topup_address="", topup_error="")
