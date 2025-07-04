@@ -75,11 +75,37 @@
   <!-- DASHBOARD -->
   <section id="dashboard">
   {% if user %}
-    <h2>Selamat datang {{ user.NamaUser }}</h2>
-    <p><strong>Saldo Anda:</strong> IDR {{ "%.2f"|format(user.Saldo) }}</p>
-  {% else %}
-    <p>Silakan login terlebih dahulu.</p>
-  {% endif %}
+  <h2>Selamat datang {{ user.NamaUser }}</h2>
+  <p><strong>Saldo Anda:</strong> IDR {{ "%.2f"|format(user.Saldo) }}</p>
+{% endif %}
+<h3>Riwayat Penukaran Gambar</h3>
+{% if user.exchanges %}
+  <table>
+    <thead>
+      <tr>
+        <th>Tanggal</th>
+        <th>Tujuan</th>
+        <th>Diagnosa</th>
+        <th>Reward</th>
+        <th>Gambar</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ex in user.exchanges %}
+        <tr>
+          <td>{{ ex.Tanggal.strftime("%Y-%m-%d %H:%M") }}</td>
+          <td>{{ ex.Tujuan }}</td>
+          <td>{{ ex.Diagnosa[:50]|safe }}...</td>
+          <td>IDR {{ "%.2f"|format(ex.SaldoReward) }}</td>
+          <td><img src="{{ url_for('static', filename='uploads/' + ex.Gambar) }}" width="50"></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>Belum ada penukaran gambar.</p>
+{% endif %}
+
 
 
     <hr>
@@ -165,20 +191,21 @@
 
   <!-- EXCHANGE -->
   <section id="exchange">
-    <h2>Penukaran Data Gambar Penyakit</h2>
-    <form action="/exchange" method="post" enctype="multipart/form-data">
-      <label for="imageUpload">Upload Gambar Penyakit:</label><br>
-      <input type="file" id="imageUpload" name="image" accept="image/*" required><br><br>
+  <h2>Penukaran Data Gambar Penyakit</h2>
+  <form action="/exchange" method="post" enctype="multipart/form-data">
+    <label for="imageUpload">Upload Gambar Penyakit:</label><br>
+    <input type="file" id="imageUpload" name="image" accept="image/*" required><br><br>
 
-      <label for="tujuanTukar">Pilih Tujuan Penukaran:</label><br>
-      <select id="tujuanTukar" name="tujuan" required>
-        <option value="dokter">Untuk data medis Rumah Sakit</option>
-        <option value="data_ai">Untuk Pelatihan Model AI</option>
-      </select><br><br>
+    <label for="tujuanTukar">Pilih Tujuan Penukaran:</label><br>
+    <select id="tujuanTukar" name="tujuan" required>
+      <option value="dokter">Untuk data medis Rumah Sakit</option>
+      <option value="data_ai">Untuk Pelatihan Model AI</option>
+    </select><br><br>
 
-      <button type="submit">Tukar Sekarang</button>
-    </form>
-  </section>
+    <button type="submit">Tukar Sekarang</button>
+  </form>
+</section>
+
 
   <!-- DISEASE PRICE -->
   <section id="diseaseprice">
