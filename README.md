@@ -13,6 +13,12 @@ Anggota tim:
 
 [Video Demo Website KuSehat Web3](https://www.youtube.com/watch?v=fVP2rikjsac)
 
+# Apa saja yang dibutuhkan:
+1. [Python Version 3.10.11](https://www.python.org/downloads/release/python-31011/)
+2. [API Key Gemini](https://aistudio.google.com/apikey)
+3. [API Key Luno](https://www.luno.com/wallet/security/api_keys)
+4. [Text Editor Visual Studio Code](https://code.visualstudio.com/Download)
+
 
 Feature:
 1. Daftar akun pengguna/daftar pasien.
