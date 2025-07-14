@@ -3,6 +3,8 @@ KuSehat adalah website inovasi teknologi kesehatan yaitu Deteksi Penyakit  mengg
 
 Tujuan proyek KuSehat adalah menciptakan sebuah platform kesehatan digital berbasis Machine Learning dan Web3 yang mampu mendeteksi penyakit secara dini, serta memungkinkan pertukaran data medis yang aman, terdesentralisasi, dan menghargai privasi pengguna.
 
+NOTE PENTING: JALANKAN PROYEK INI HARUS KEADAAN INTERNET MENYALA ATAU WIFI MENYALA UNTUK FITUR TOP UP BERFUNGSI.
+
 Nama anggota tim: Ananda Technology Solution(AnTS Groups)
 
 Anggota tim:
@@ -26,6 +28,7 @@ Feature:
 3. Top up saldo koin Crypto untuk menggunakan fitur deteksi penyakit real-time dan deteksi penyakit upload gambar.
 4. Deteksi Penyakit Real-time melalui kamera dan akan menghasilkan nama penyakit,deskripsi penyakit,cara penyembuhan dan obat.
 5. Deteksi penyakit melalui upload gambar dan akan menghasilkan nama penyakit,deskripsi penyakit,cara penyembuhan dan obat.
+6. Penukaran data penyakit melalui upload gambar untuk mendapatkan saldo.
 
 
 Demo KuSehat Website untuk submit World Hacker Code Leage Tampilan melalui Screenshot:
