@@ -11,8 +11,8 @@ from pony.orm import Database, Required, Optional, PrimaryKey, Set, db_session, 
 from luno_python.client import Client
 
 # Luno API Setup
-LUNO_API_KEY_ID = "ngj6vvfjtxykp"
-LUNO_API_KEY_SECRET = "ANqZRoFWc-te-CUFxsOzMBoQruBvjOMP_RZQGoDDFso"
+LUNO_API_KEY_ID = "jnm42w8w23t8v"
+LUNO_API_KEY_SECRET = "QSRtcDAysoiAs3IiRrDtqaXeO35SPzFMXU0niYUHNnc"
 luno_client = Client(api_key_id=LUNO_API_KEY_ID, api_key_secret=LUNO_API_KEY_SECRET)
 
 # Database Setup
