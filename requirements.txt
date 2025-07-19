@@ -5,13 +5,8 @@ pony==0.7.16
 PyMySQL==1.1.0
 opencv-python==4.8.0.76
 keras==2.11.0
-#openai==0.28.1
-#google-generativeai
-#python-gemini-api
-#protobuf==3.20.3
 requests
 flask-cors==3.0.10
 flask-jwt-extended==4.6.0
 tensorflow==2.11.0
 numpy==1.26.4
-#g4f[all]
