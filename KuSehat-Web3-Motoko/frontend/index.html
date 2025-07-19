@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>KuSehat Web 3 (IC)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: sans-serif; margin: 20px; background-color: #f0f2f5; }
+    .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    nav { border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 20px; }
+    nav a { margin-right: 15px; cursor: pointer; text-decoration: none; color: #007bff; font-weight: 500; }
+    nav a:hover { text-decoration: underline; }
+    section { display: none; }
+    section.active { display: block; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+    th { background-color: #f2f2f2; }
+    input, select, button { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 4px; border: 1px solid #ccc; box-sizing: border-box; }
+    button { background-color: #007bff; color: white; border: none; cursor: pointer; font-size: 16px; }
+    button:hover { background-color: #0056b3; }
+    button:disabled { background-color: #aaa; cursor: not-allowed; }
+    .diagnosis { margin-top: 15px; padding: 10px; border: 1px solid #eee; background-color: #f9f9f9; border-radius: 5px; }
+    .hidden { display: none; }
+    .error { color: red; font-weight: bold; }
+    .success { color: green; font-weight: bold; }
+    #user-info { padding: 10px; background: #e7f3ff; border: 1px solid #b3d7ff; border-radius: 5px; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <nav id="navbar">
+    <!-- Navigasi akan di-render oleh JavaScript -->
+  </nav>
+
+  <div id="user-info" class="hidden"></div>
+  <div id="global-message" style="text-align:center; padding:10px;"></div>
+
+  <!-- PRICING -->
+  <section id="pricing">
+    <h2>Pricing List</h2>
+    <table>
+      <thead><tr><th>Paket</th><th>Fitur</th><th>Harga</th></tr></thead>
+      <tbody>
+        <tr><td>Basic</td><td>3x Deteksi Penyakit gratis per hari.</td><td>Gratis</td></tr>
+        <tr><td>Premium</td><td>Deteksi penyakit tanpa batas.</td><td>Top up minimal IDR 150.000</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- LOGIN -->
+  <section id="login">
+    <h2>Login</h2>
+    <form id="login-form">
+      <label>Email:</label><input type="email" id="login-email" required>
+      <label>Password:</label><input type="password" id="login-password" required>
+      <button type="submit">Login</button>
+    </form>
+  </section>
+
+  <!-- REGISTER -->
+  <section id="register">
+    <h2>Daftar Akun</h2>
+    <form id="register-form">
+      <label>Nama:</label><input type="text" id="register-nama" required>
+      <label>Email:</label><input type="email" id="register-email" required>
+      <label>Password:</label><input type="password" id="register-password" required>
+      <button type="submit">Daftar</button>
+    </form>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="dashboard">
+    <h3>Deteksi Penyakit Kulit dengan AI</h3>
+    <form id="detect-form">
+      <p>Unggah gambar:</p>
+      <input type="file" name="image" id="detect-image-input" accept="image/*" required>
+      <button type="submit">Upload dan Diagnosa</button>
+    </form>
+    <div id="detect-result" class="diagnosis"></div>
+    <hr>
+    <h3>Riwayat Penukaran Gambar</h3>
+    <table id="history-table">
+        <thead><tr><th>Tanggal</th><th>Tujuan</th><th>Reward</th><th>Gambar</th></tr></thead>
+        <tbody><!-- Diisi oleh JS --></tbody>
+    </table>
+  </section>
+
+  <!-- EDIT USER -->
+  <section id="edituser">
+    <h2>Ganti Data User</h2>
+    <form id="edituser-form">
+      <label>Nama User:</label><input type="text" id="edit-nama" required>
+      <label>Email:</label><input type="email" id="edit-email" required>
+      <label>Password Lama:</label><input type="password" id="edit-old-password" required>
+      <label>Password Baru:</label><input type="password" id="edit-new-password" required>
+      <button type="submit">Perbarui Data</button>
+    </form>
+  </section>
+
+ <!-- TOP UP -->
+  <section id="topup">
+    <h2>Top Up Saldo Crypto</h2>
+    <form id="topup-form">
+      <label>Jumlah (IDR):</label><input type="number" id="topup-jumlah" required>
+      <label>Pilih Metode:</label>
+      <select id="topup-metode" required>
+        <option value="btc">Bitcoin (BTC)</option>
+        <option value="eth">Ethereum (ETH)</option>
+      </select>
+      <button type="submit">Dapatkan Alamat Deposit</button>
+    </form>
+    <div id="topup-result" class="diagnosis"></div>
+  </section>
+
+  <!-- EXCHANGE -->
+  <section id="exchange">
+    <h2>Penukaran Data Gambar Penyakit</h2>
+    <form id="exchange-form">
+      <label>Upload Gambar Penyakit:</label><input type="file" id="exchange-image-input" accept="image/*" required>
+      <label>Pilih Tujuan Penukaran:</label>
+      <select id="exchange-tujuan" required>
+        <option value="dokter">Untuk data medis Rumah Sakit (Reward: 100.000)</option>
+        <option value="data_ai">Data Pelatihan Model AI (Reward: 200.000)</option>
+      </select>
+      <button type="submit">Tukar Sekarang</button>
+    </form>
+  </section>
+
+  <!-- DISEASE PRICE -->
+  <section id="diseaseprice">
+    <h2>Harga Penukaran Data</h2>
+    <table>
+      <thead><tr><th>Jenis Data</th><th>Harga Tukar (IDR)</th><th>Tujuan</th></tr></thead>
+      <tbody>
+        <tr><td>Gambar Penyakit Kulit/Kelamin (Kanker, dll)</td><td>IDR 100.000</td><td>Data medis Rumah Sakit</td></tr>
+        <tr><td>Gambar Penyakit Kulit/Kelamin (Kanker, dll)</td><td>IDR 200.000</td><td>Data medis & Pelatihan AI</td></tr>
+      </tbody>
+    </table>
+  </section>
+</div>
+
+<script type="module">
+  import { Actor, HttpAgent } from "@dfinity/agent";
+  // Impor IDL factory yang digenerate oleh dfx
+  import { idlFactory } from "../../.dfx/local/canisters/backend/backend.did.js";
+
+  const backendCanisterId = process.env.CANISTER_ID_BACKEND;
+  const agent = new HttpAgent();
+  if (process.env.DFX_NETWORK !== "ic") {
+    agent.fetchRootKey().catch(err => {
+      console.warn("Gagal fetch root key. Pastikan replica lokal berjalan.");
+      console.error(err);
+    });
+  }
+  const backend = Actor.createActor(idlFactory, { agent, canisterId: backendCanisterId });
+
+  // --- State Management ---
+  let currentUser = null;
+
+  // --- Helper Functions ---
+  function showSection(id) {
+    document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+    const activeSection = document.getElementById(id);
+    if(activeSection) activeSection.classList.add('active');
+  }
+
+  function showMessage(text, type = 'info') {
+      const el = document.getElementById('global-message');
+      el.textContent = text;
+      el.className = type; // 'success' atau 'error'
+      setTimeout(() => el.textContent = '', 5000);
+  }
+
+  function renderNav() {
+    const nav = document.getElementById('navbar');
+    if (currentUser) {
+      nav.innerHTML = `
+        <a onclick="window.app.showSection('dashboard')">Dashboard</a>
+        <a onclick="window.app.showSection('edituser')">Ganti Data</a>
+        <a onclick="window.app.showSection('topup')">Top Up</a>
+        <a onclick="window.app.showSection('exchange')">Tukar Gambar</a>
+        <a onclick="window.app.showSection('diseaseprice')">Harga Penukaran</a>
+        <a href="#" id="logout-btn">Logout</a>
+      `;
+      document.getElementById('logout-btn').onclick = handleLogout;
+    } else {
+      nav.innerHTML = `
+        <a onclick="window.app.showSection('pricing')">Pricing</a>
+        <a onclick="window.app.showSection('login')">Login</a>
+        <a onclick="window.app.showSection('register')">Daftar</a>
+      `;
+    }
+  }
+
+  function renderUserInfo() {
+      const el = document.getElementById('user-info');
+      if (currentUser) {
+          el.innerHTML = `Selamat datang <strong>${currentUser.NamaUser}</strong>! | Saldo Anda: <strong>IDR ${currentUser.Saldo.toLocaleString('id-ID')}</strong>`;
+          el.classList.remove('hidden');
+      } else {
+          el.classList.add('hidden');
+      }
+  }
+
+  function renderHistoryTable() {
+      const tbody = document.querySelector("#history-table tbody");
+      tbody.innerHTML = ''; // Clear table
+      if (currentUser && currentUser.exchanges) {
+          currentUser.exchanges.forEach(ex => {
+              const row = `<tr>
+                  <td>${ex.Tanggal}</td>
+                  <td>${ex.Tujuan}</td>
+                  <td>IDR ${ex.SaldoReward.toLocaleString('id-ID')}</td>
+                  <td><img src="http://127.0.0.1:5003/static/uploads/${ex.Gambar}" width="50" alt="gambar riwayat"></td>
+              </tr>`;
+              tbody.innerHTML += row;
+          });
+      }
+  }
+  
+  function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result.split(',')[1]);
+          reader.onerror = error => reject(error);
+      });
+  }
+
+  // --- Event Handlers ---
+  async function handleRegister(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    btn.disabled = true;
+    btn.textContent = 'Mendaftar...';
+    const nama = document.getElementById('register-nama').value;
+    const email = document.getElementById('register-email').value;
+    const password = document.getElementById('register-password').value;
+    
+    try {
+        const responseText = await backend.register(nama, email, password);
+        const result = JSON.parse(responseText);
+        if (result.success) {
+            showMessage(result.message, 'success');
+            showSection('login');
+        } else {
+            showMessage(result.message, 'error');
+        }
+    } catch (err) {
+        showMessage('Error: ' + err.message, 'error');
+    }
+    btn.disabled = false;
+    btn.textContent = 'Daftar';
+  }
+
+  async function handleLogin(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('button');
+      btn.disabled = true;
+      btn.textContent = 'Logging in...';
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+
+      try {
+          const responseText = await backend.login(email, password);
+          const result = JSON.parse(responseText);
+          if (result.success) {
+              currentUser = result.user;
+              localStorage.setItem('kusehatUser', JSON.stringify(currentUser));
+              updateUIForLogin();
+          } else {
+              showMessage(result.message, 'error');
+          }
+      } catch (err) {
+          showMessage('Error: ' + err.message, 'error');
+      }
+      btn.disabled = false;
+      btn.textContent = 'Login';
+  }
+
+  function handleLogout() {
+      currentUser = null;
+      localStorage.removeItem('kusehatUser');
+      updateUIForLogout();
+  }
+
+  async function handleDetect(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('button');
+      const resultEl = document.getElementById('detect-result');
+      const imageFile = document.getElementById('detect-image-input').files[0];
+      if (!imageFile) {
+          showMessage('Pilih gambar terlebih dahulu.', 'error');
+          return;
+      }
+      
+      btn.disabled = true;
+      btn.textContent = 'Mendeteksi...';
+      resultEl.innerHTML = 'Sedang memproses...';
+
+      try {
+          const imageBase64 = await fileToBase64(imageFile);
+          const responseText = await backend.detect(currentUser.UserID, imageBase64);
+          const result = JSON.parse(responseText);
+
+          if (result.success) {
+              resultEl.innerHTML = `
+                  <p><strong>Hasil Diagnosa:</strong> ${result.diagnosis}</p>
+                  <p><strong>Kepercayaan:</strong> ${result.confidence}</p>
+                  <hr>
+                  <div>${result.explanation}</div>
+              `;
+          } else {
+              resultEl.innerHTML = `<p class="error">${result.error || result.message}</p>`;
+          }
+      } catch (err) {
+          resultEl.innerHTML = `<p class="error">Error: ${err.message}</p>`;
+      }
+      btn.disabled = false;
+      btn.textContent = 'Upload dan Diagnosa';
+  }
+  
+  async function handleTopup(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('button');
+      const resultEl = document.getElementById('topup-result');
+      const jumlah = parseInt(document.getElementById('topup-jumlah').value);
+      const metode = document.getElementById('topup-metode').value;
+
+      btn.disabled = true;
+      btn.textContent = "Memproses...";
+      resultEl.innerHTML = '';
+      
+      try {
+        const responseText = await backend.topup(currentUser.UserID, jumlah, metode);
+        const result = JSON.parse(responseText);
+        if(result.success) {
+            resultEl.innerHTML = `<p class="success">Silakan kirim aset ke alamat: <code>${result.address}</code></p><p>Saldo Anda telah diperbarui.</p>`;
+            currentUser.Saldo = result.new_saldo;
+            renderUserInfo();
+        } else {
+            resultEl.innerHTML = `<p class="error">${result.error || result.message}</p>`;
+        }
+      } catch(err) {
+        resultEl.innerHTML = `<p class="error">Error: ${err.message}</p>`;
+      }
+      btn.disabled = false;
+      btn.textContent = "Dapatkan Alamat Deposit";
+  }
+
+  async function handleExchange(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('button');
+      const imageFile = document.getElementById('exchange-image-input').files[0];
+      const tujuan = document.getElementById('exchange-tujuan').value;
+      if (!imageFile) {
+          showMessage('Pilih gambar untuk ditukar.', 'error');
+          return;
+      }
+      
+      btn.disabled = true;
+      btn.textContent = 'Menukar...';
+      
+      try {
+          const imageBase64 = await fileToBase64(imageFile);
+          const responseText = await backend.exchange(currentUser.UserID, tujuan, imageBase64);
+          const result = JSON.parse(responseText);
+          showMessage(result.message, result.success ? 'success' : 'error');
+          if (result.success) {
+              currentUser.Saldo = result.new_saldo;
+              renderUserInfo();
+          }
+      } catch (err) {
+          showMessage('Error: ' + err.message, 'error');
+      }
+      btn.disabled = false;
+      btn.textContent = 'Tukar Sekarang';
+  }
+
+  // --- UI Update Functions ---
+  function updateUIForLogin() {
+      renderNav();
+      renderUserInfo();
+      renderHistoryTable();
+      showSection('dashboard');
+  }
+
+  function updateUIForLogout() {
+      renderNav();
+      renderUserInfo();
+      showSection('pricing');
+  }
+  
+  // --- Initialization ---
+  function init() {
+    // Attach event listeners
+    document.getElementById('register-form').addEventListener('submit', handleRegister);
+    document.getElementById('login-form').addEventListener('submit', handleLogin);
+    document.getElementById('detect-form').addEventListener('submit', handleDetect);
+    document.getElementById('topup-form').addEventListener('submit', handleTopup);
+    document.getElementById('exchange-form').addEventListener('submit', handleExchange);
+    
+    // Check for logged in user in localStorage
+    const savedUser = localStorage.getItem('kusehatUser');
+    if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        updateUIForLogin();
+    } else {
+        updateUIForLogout();
+    }
+    
+    // Make functions globally accessible for inline onclick
+    window.app = { showSection };
+  }
+
+  init();
+</script>
+</body>
+</html>
