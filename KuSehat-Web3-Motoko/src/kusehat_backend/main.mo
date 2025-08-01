@@ -38,7 +38,7 @@ actor KuSehat {
     };
 
     // Alamat URL backend Flask Anda
-    private let backendUrl = "http://127.0.0.1:5000/api";
+    private let backendUrl = "http://127.0.0.1:5001/api";
 
     // --- Public Functions (Canister Methods) ---
 
