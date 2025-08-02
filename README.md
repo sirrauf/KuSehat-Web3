@@ -45,14 +45,8 @@ Anggota tim:
 8. [Download Laragon](https://github.com/leokhoa/laragon/releases/download/6.0.0/laragon-wamp.exe)
 9. Install Laragon dan tambahkan database kusehat di laragon.
 10. Jalankan website KuSehat Python: ketik python app.py
-11. Untuk Jalankan API Website KuSehat Motoko, pergi ke direktori folder KuSehat-Web3-Motoko dengan ketik di cmd: cd KuSehat-Web3-Motoko
-12. Buat Virtual Enviroment Machine untuk menampung library Python yg akan diinstal: python -m venv kusehat-env
-13. Aktifkan Virtual Enviroment Machine,ketik di Command Prompt dalam folder project: cd kusehat-env/Scripts.
-14. Setelah itu,ketik di Command prompt didalam folder project: activate.bat
-15. Jalankan API Website KuSehat didalam folder KuSehat-Web3-Motoko: python api.py
-16. Sebelum jalankan Website KuSehat di Motoko,harus install Motoko dan WSL Ubuntu terlebih dahulu: https://internetcomputer.org/docs/motoko/install
-17. Jalankan Website KuSehat di Motoko, ketik didalam folder KuSehat-Web3-Motoko: dfx start --clean --background kemudian ketik dfx deploy.
-18. Selesai.
+11. Untuk jalankan Website API Flask dan Website API Motoko, [Buka file Dokumentasi](https://raw.githubusercontent.com/sirrauf/KuSehat-Web3/refs/heads/main/dokumentasi%20Flask%20Motoko.txt).
+12. Selesai
 
 
 
