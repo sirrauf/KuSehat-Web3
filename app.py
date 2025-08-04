@@ -56,6 +56,67 @@ app.secret_key = 'rahasia_kusehat'
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
+# Memuat Model dan Label (dilakukan sekali saat aplikasi dimulai)
+try:
+    model = load_model("model/keras_Model.h5", compile=False)
+    with open("model/labels.txt", "r") as f:
+        class_names = [line.strip() for line in f.readlines()]
+except Exception as e:
+    print(f"Error loading model or labels: {e}")
+    model = None
+    class_names = []
+
+GEMINI_API_KEY = "AIzaSyDwniC_zbYaVpRWRGjGk9HnhJWAe9IPZGM"
+GEMINI_API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
+
+def get_gemini_explanation(disease_name):
+    prompt = (
+        f"Tolong jelaskan informasi tentang penyakit kulit berikut ini dalam format HTML yang rapi:\n\n"
+        f"Nama penyakit: {disease_name}\n\n"
+        f"1. Deskripsi\n2. Gejala dan Penyebab\n3. Cara Penyembuhan\n4. Rekomendasi Obat"
+    )
+    headers = {"Content-Type": "application/json"}
+    payload = {"contents": [{"parts": [{"text": prompt}]}]}
+    try:
+        response = requests.post(GEMINI_API_URL, json=payload, headers=headers)
+        response.raise_for_status()
+        data = response.json()
+        
+        # Periksa apakah respons memiliki struktur yang diharapkan
+        if data and 'candidates' in data and data['candidates'][0] and 'content' in data['candidates'][0] and 'parts' in data['candidates'][0]['content'] and data['candidates'][0]['content']['parts'][0] and 'text' in data['candidates'][0]['content']['parts'][0]:
+            return data['candidates'][0]['content']['parts'][0]['text']
+        else:
+            return "❌ Respons dari Gemini tidak valid."
+            
+    except requests.exceptions.RequestException as e:
+        return f"❌ Gagal mengambil informasi dari Gemini AI: {e}"
+
+def process_image_for_detection(image_path):
+    try:
+        image = cv2.imread(image_path)
+        if image is None:
+            return {"error": "Gagal membaca file gambar."}
+        
+        image = cv2.resize(image, (224, 224))
+        image = np.asarray(image, dtype=np.float32).reshape(1, 224, 224, 3)
+        image = (image / 127.5) - 1
+
+        prediction = model.predict(image)
+        index = np.argmax(prediction)
+        class_name = class_names[index].strip()
+        confidence = float(prediction[0][index])
+
+        gemini_info = get_gemini_explanation(class_name)
+
+        diagnosis = (
+            f"📤 <b>Deteksi Upload:</b> <b>{class_name}</b><br>"
+            f"🧪 <b>Kepercayaan:</b> {confidence:.2%}<br><br>"
+            f"🧠 <b>Penjelasan Gemini AI:</b><br>{gemini_info}"
+        )
+        return {"diagnosis": diagnosis, "class_name": class_name}
+    except Exception as e:
+        return {"error": f"❌ Terjadi kesalahan saat proses AI: {e}"}
+
 @app.route("/", methods=["GET", "POST"])
 @db_session
 def home():
@@ -73,64 +134,30 @@ def home():
         today = date.today()
         upload_count = select(e for e in Exchange if e.User == user and e.Tanggal.date() == today and e.Tujuan == "deteksi").count()
 
-        # Check if user has Premium (saldo >= 150000) or is still within free 3 uploads
         if upload_count >= 3:
             if user.Saldo >= 150000:
-                user.Saldo -= 150000  # Charge user once for premium access
-                upload_count = 0  # reset or ignore limit
+                user.Saldo -= 150000
+                upload_count = 0
             else:
                 return redirect(url_for("topup_page"))
 
         file = request.files.get("image")
-        method = request.form.get("method", "")
-
         if not file or file.filename == "":
             diagnosis = "❌ Gambar tidak ditemukan."
         elif not file.filename.lower().endswith((".jpg", ".jpeg", ".png")):
             diagnosis = "❌ Format file tidak didukung. Gunakan JPG, JPEG, atau PNG."
-        elif method == "upload":
+        else:
             filename = secure_filename(f"{uuid.uuid4().hex}_{file.filename}")
             image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(image_path)
-            image = cv2.imread(image_path)
-
-            try:
-                model = load_model("model/keras_Model.h5", compile=False)
-                with open("model/labels.txt", "r") as f:
-                    class_names = f.readlines()
-
-                image = cv2.resize(image, (224, 224))
-                image = np.asarray(image, dtype=np.float32).reshape(1, 224, 224, 3)
-                image = (image / 127.5) - 1
-
-                prediction = model.predict(image)
-                index = np.argmax(prediction)
-                class_name = class_names[index].strip()
-                confidence = float(prediction[0][index])
-
-                GEMINI_API_KEY = "AIzaSyDwniC_zbYaVpRWRGjGk9HnhJWAe9IPZGM"
-                GEMINI_API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
-                prompt = (
-                    f"Tolong jelaskan informasi tentang penyakit kulit berikut ini dalam format HTML yang rapi:\n\n"
-                    f"Nama penyakit: {class_name}\n\n"
-                    f"1. Deskripsi\n2. Gejala dan Penyebab\n3. Cara Penyembuhan\n4. Rekomendasi Obat"
-                )
-                headers = {"Content-Type": "application/json"}
-                payload = {"contents": [{"parts": [{"text": prompt}]}]}
-                response = requests.post(GEMINI_API_URL, json=payload, headers=headers)
-                data = response.json()
-                gemini_info = data.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "")
-
-                diagnosis = (
-                    f"📤 <b>Deteksi Upload:</b> <b>{class_name}</b><br>"
-                    f"🧪 <b>Kepercayaan:</b> {confidence:.2%}<br><br>"
-                    f"🧠 <b>Penjelasan Gemini AI:</b><br>{gemini_info}"
-                )
-
+            
+            result = process_image_for_detection(image_path)
+            if "error" in result:
+                diagnosis = result["error"]
+            else:
+                diagnosis = result["diagnosis"]
+                class_name = result["class_name"]
                 Exchange(User=user, Tujuan="deteksi", Gambar=filename, Diagnosa=class_name, Tanggal=datetime.now(), SaldoReward=0.0)
-
-            except Exception as e:
-                diagnosis = f"❌ Terjadi kesalahan saat proses AI: {e}"
 
     return render_template("index.html", diagnosis=diagnosis, image_path=image_path,
                            user=user, topup_address="", topup_error="", section="dashboard", today=date.today())
@@ -168,7 +195,7 @@ def dashboard():
         return redirect(url_for("home"))
     user = User.get(UserID=user_id)
     return render_template("index.html", diagnosis="", image_path="", user=user,
-                           topup_address="", topup_error="")
+                           topup_address="", topup_error="", section="dashboard")
 
 @app.route("/update_user", methods=["POST"])
 @db_session
@@ -287,4 +314,4 @@ def logout():
     return redirect(url_for("home"))
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=True)
