@@ -32,7 +32,7 @@ Anggota tim:
 3. [API Key Luno](https://www.luno.com/wallet/security/api_keys)
 4. [Text Editor Visual Studio Code](https://code.visualstudio.com/Download)
 5. [Install Motoko dan WSL Ubuntu](https://internetcomputer.org/docs/motoko/install)
-
+6. [Download & Install Laragon](https://github.com/leokhoa/laragon/releases/download/6.0.0/laragon-wamp.exe)
 
 # Cara run server website di Lokal Laptop 
 1. [Download Python Versi 3.10.11](https://www.python.org/downloads/release/python-31011/)
