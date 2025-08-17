@@ -79,19 +79,27 @@ def get_gemini_explanation(disease_name):
     headers = {"Content-Type": "application/json"}
     payload = {"contents": [{"parts": [{"text": prompt}]}]}
 
-    try:
-        response = requests.post(GEMINI_API_URL, json=payload, headers=headers, timeout=15)
-        response.raise_for_status()
-        data = response.json()
+    for attempt in range(3):  # coba ulang max 3x
+        try:
+            response = requests.post(GEMINI_API_URL, json=payload, headers=headers, timeout=15)
+            if response.status_code == 429:
+                print("⚠️ Gemini API rate limit (429), retrying...")
+                time.sleep(2)  # tunggu sebentar lalu retry
+                continue
+            response.raise_for_status()
+            data = response.json()
 
-        candidates = data.get("candidates", [])
-        if candidates and "content" in candidates[0]:
-            parts = candidates[0]["content"].get("parts", [])
-            if parts and "text" in parts[0]:
-                return parts[0]["text"]
-        return "⚠️ Tidak ada penjelasan yang diberikan Gemini."
-    except Exception as e:
-        return f"⚠️ Informasi AI tidak tersedia ({e})."
+            candidates = data.get("candidates", [])
+            if candidates and "content" in candidates[0]:
+                parts = candidates[0]["content"].get("parts", [])
+                if parts and "text" in parts[0]:
+                    return parts[0]["text"]
+            return "⚠️ Tidak ada penjelasan yang diberikan Gemini."
+        except requests.exceptions.RequestException as e:
+            print(f"❌ Error akses Gemini API: {e}")
+            continue
+
+    return f"⚠️ Informasi AI tidak tersedia saat ini. Silakan coba lagi nanti."
 
 def process_image_for_detection(image_path):
     try:
