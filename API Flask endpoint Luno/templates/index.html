@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Luno API Demo</title>
+</head>
+<body>
+  <h1>Demo Akses API Luno via Flask</h1>
+
+  <h2>Cek Alamat Deposit</h2>
+  <ul>
+    <li><a href="/luno/address/btc">Alamat Deposit BTC</a></li>
+    <li><a href="/luno/address/eth">Alamat Deposit ETH</a></li>
+  </ul>
+
+  <h2>Cek Saldo</h2>
+  <ul>
+    <li><a href="/luno/balance/btc">Saldo BTC</a></li>
+    <li><a href="/luno/balance/eth">Saldo ETH</a></li>
+  </ul>
+
+  <hr>
+
+  {% if asset %}
+    <h3>Hasil untuk asset: {{ asset }}</h3>
+    {% if address %}
+      <p><b>Alamat Deposit:</b> {{ address }}</p>
+    {% endif %}
+    {% if balance %}
+      <p><b>Saldo:</b> {{ balance }}</p>
+    {% endif %}
+    {% if error %}
+      <p style="color:red;">❌ Error: {{ error }}</p>
+    {% endif %}
+  {% endif %}
+
+</body>
+</html>
