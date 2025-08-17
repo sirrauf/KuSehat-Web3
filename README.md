@@ -43,7 +43,7 @@ Anggota tim:
 6. Ketika Virtual Enviroment Machine sudah aktif,ketik di Command Prompt: cd.. sebanyak 2 kali.
 7. Kemudian install library Python dalam requirement.txt,ketik perintah di Command prompt dalam folder project: pip install -r requirement.txt
 8. [Download Laragon](https://github.com/leokhoa/laragon/releases/download/6.0.0/laragon-wamp.exe)
-9. Install Laragon dan tambahkan database kusehat di laragon.
+9. Install Laragon dan buat database kusehat di laragon.
 10. Jalankan website KuSehat Python: ketik python app.py
 11. Untuk jalankan Website API Flask dan Website API Motoko, [Buka file Dokumentasi](https://raw.githubusercontent.com/sirrauf/KuSehat-Web3/refs/heads/main/dokumentasi%20Flask%20Motoko.txt).
 12. Selesai
