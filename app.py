@@ -3,6 +3,7 @@ import uuid
 import cv2
 import numpy as np
 import requests
+import time
 from datetime import datetime, date
 from flask import Flask, render_template, request, session, redirect, url_for
 from werkzeug.utils import secure_filename
@@ -73,23 +74,32 @@ def get_gemini_explanation(disease_name):
     prompt = (
         f"Tolong jelaskan informasi tentang penyakit kulit berikut ini dalam format HTML yang rapi:\n\n"
         f"Nama penyakit: {disease_name}\n\n"
-        f"1. Deskripsi\n2. Gejala dan Penyebab\n3. Cara Penyembuhan\n4. Rekomendasi Obat"
+        f"1. Deskripsi singkat tentang penyakit ini\n2. Gejala dan Penyebab\n3. Cara pengobatan harus apa\n4. Rekomendasi Obat\n5.Kapan harus ke dokter\n6.Apakah penyakit ini perlu dioperasi?"
     )
     headers = {"Content-Type": "application/json"}
     payload = {"contents": [{"parts": [{"text": prompt}]}]}
-    try:
-        response = requests.post(GEMINI_API_URL, json=payload, headers=headers)
-        response.raise_for_status()
-        data = response.json()
-        
-        # Periksa apakah respons memiliki struktur yang diharapkan
-        if data and 'candidates' in data and data['candidates'][0] and 'content' in data['candidates'][0] and 'parts' in data['candidates'][0]['content'] and data['candidates'][0]['content']['parts'][0] and 'text' in data['candidates'][0]['content']['parts'][0]:
-            return data['candidates'][0]['content']['parts'][0]['text']
-        else:
-            return "❌ Respons dari Gemini tidak valid."
-            
-    except requests.exceptions.RequestException as e:
-        return f"❌ Gagal mengambil informasi dari Gemini AI: {e}"
+
+    for attempt in range(3):  # coba ulang max 3x
+        try:
+            response = requests.post(GEMINI_API_URL, json=payload, headers=headers, timeout=15)
+            if response.status_code == 429:
+                print("⚠️ Gemini API rate limit (429), retrying...")
+                time.sleep(2)  # tunggu sebentar lalu retry
+                continue
+            response.raise_for_status()
+            data = response.json()
+
+            candidates = data.get("candidates", [])
+            if candidates and "content" in candidates[0]:
+                parts = candidates[0]["content"].get("parts", [])
+                if parts and "text" in parts[0]:
+                    return parts[0]["text"]
+            return "⚠️ Tidak ada penjelasan yang diberikan Gemini."
+        except requests.exceptions.RequestException as e:
+            print(f"❌ Error akses Gemini API: {e}")
+            continue
+
+    return f"⚠️ Informasi AI tidak tersedia saat ini. Silakan coba lagi nanti."
 
 def process_image_for_detection(image_path):
     try:
