@@ -1,0 +1,33 @@
+Cara deploy di AWS Cloud EC2:
+
+1. Download dan Install WSL Ubuntu di Windows
+
+2. Setting EC2 AWS Cloud dengan cara klik Launch Instance
+
+3. Pilih Image Server, pilih Ubuntu TensorFlow
+
+4. Setelah itu klik Launch Instances
+
+5. Copy paste file pem ke direktori ubuntu /home/namauserkamu
+
+6. Kemudian ketik di wsl ubuntu: chmod 400 "KuSehat.pem"
+
+7. Setelah itu ketik di wsl ubuntu: ssh -i "KuSehat.pem" ubuntu@ec2-54-179-10-60.ap-southeast-1.compute.amazonaws.com
+
+8. Kemudian ketik di wsl ubuntu ketik satu per satu: 
+
+sudo apt-get update 
+python3 -V #pastikan versi python adalah 3.8 atau lebih tinggi 
+sudo apt install python3-pip 
+sudo apt-get install nginx
+sudo apt install git
+
+9. Setelah itu git clone project kamu yang ada di Github
+
+10. Ketik sudo apt install gunicorn di wsl ubuntu
+
+11. Ketik pip install gunicorn di wsl ubuntu
+
+12. ketik gunicorn app:app
+
+13. Selesai,selamat proyek kamu sudah selesai di deploy
