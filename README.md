@@ -46,8 +46,7 @@ Anggota tim:
 9. Install Laragon dan buat database kusehat di laragon.
 10. Jalankan website KuSehat Python: ketik python app.py
 11. Untuk jalankan Website API Flask dan Website API Motoko, [Buka file Dokumentasi](https://raw.githubusercontent.com/sirrauf/KuSehat-Web3/refs/heads/main/dokumentasi%20Flask%20Motoko.txt).
-12. Selesai
-
+12. Cara untuk deploy proyek KuSehat ke AWS Cloud EC2,[Buka file Dokumentasi](https://raw.githubusercontent.com/sirrauf/KuSehat-Web3/refs/heads/main/Dokumentasi%20deploy%20KuSehat%20ke%20AWS%20Cloud%20EC2.txt)
 
 
 Demo KuSehat Website untuk submit World Hacker Code Leage Tampilan melalui Screenshot:
