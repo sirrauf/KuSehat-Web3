@@ -33,6 +33,7 @@ Anggota tim:
 4. [Text Editor Visual Studio Code](https://code.visualstudio.com/Download)
 5. [Install Motoko dan WSL Ubuntu](https://internetcomputer.org/docs/motoko/install)
 6. [Download & Install Laragon](https://github.com/leokhoa/laragon/releases/download/6.0.0/laragon-wamp.exe)
+7. [Daftar akun AWS Cloud](https://ap-southeast-2.signin.aws.amazon.com/oauth?client_id=arn%3Aaws%3Asignin%3A%3A%3Aconsole%2Fcanvas&code_challenge=Lpdc3mLt90Ntdvn5-J794ly5ZmD9LajdpbY3UI0NFLM&code_challenge_method=SHA-256&response_type=code&redirect_uri=https%3A%2F%2Fconsole.aws.amazon.com%2Fconsole%2Fhome%3FhashArgs%3D%2523%26isauthcode%3Dtrue%26state%3DhashArgsFromTB_ap-southeast-2_e843b3538b607380)
 
 # Cara run server website di Lokal Laptop 
 1. [Download Python Versi 3.10.11](https://www.python.org/downloads/release/python-31011/)
@@ -47,6 +48,7 @@ Anggota tim:
 10. Jalankan website KuSehat Python: ketik python app.py
 11. Untuk jalankan Website API Flask dan Website API Motoko, [Buka file Dokumentasi](https://raw.githubusercontent.com/sirrauf/KuSehat-Web3/refs/heads/main/dokumentasi%20Flask%20Motoko.txt).
 12. Cara untuk deploy proyek KuSehat ke AWS Cloud EC2,[Buka file Dokumentasi](https://raw.githubusercontent.com/sirrauf/KuSehat-Web3/refs/heads/main/Dokumentasi%20deploy%20KuSehat%20ke%20AWS%20Cloud%20EC2.txt)
+13. Selesai
 
 
 Demo KuSehat Website untuk submit World Hacker Code Leage Tampilan melalui Screenshot:
