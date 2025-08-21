@@ -1,0 +1,30 @@
+{
+  "canisters": {
+    "kusehat_backend": {
+      "main": "src/kusehat_backend/main.mo",
+      "type": "motoko"
+    },
+    "kusehat_frontend": {
+      "dependencies": [
+        "kusehat_backend"
+      ],
+      "frontend": {
+        "entrypoint": "src/kusehat_frontend/.output/public/index.html"
+      },
+      "source": [
+        "src/kusehat_frontend/.output/public/"
+      ],
+      "type": "assets",
+      "build": [
+        "npm --prefix src/kusehat_frontend install",
+        "npm --prefix src/kusehat_frontend run generate"
+      ]
+    }
+  },
+  "defaults": {
+    "build": {
+      "packtool": "vessel"
+    }
+  },
+  "version": 1
+}
