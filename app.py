@@ -2,7 +2,7 @@ import os
 import uuid
 import numpy as np
 import requests
-from datetime import datetime
+from datetime import datetime, date # Ditambahkan date
 from flask import Flask, render_template, request, session, redirect, url_for
 from werkzeug.utils import secure_filename
 from pony.orm import Database, Required, Optional, PrimaryKey, Set, db_session
@@ -19,6 +19,12 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 ENABLE_AI = True
 GEMINI_API_KEY = "AIzaSyDb3F5n7dHIHlz9dnUE2rMKh6kXQM8IcB4"   # hardcode API Key
+
+# --- [BARU] Konfigurasi Kunci API Luno ---
+# Ganti dengan Kunci API Luno Anda yang sebenarnya
+LUNO_API_KEY_ID="jnm42w8w23t8v"
+LUNO_API_KEY_SECRET="QSRtcDAysoiAs3IiRrDtqaXeO35SPzFMXU0niYUHNnc"
+
 
 # =========================
 # Database
@@ -109,9 +115,9 @@ def analyze_with_gemini(disease_name, confidence):
         return "⚠️ GEMINI_API_KEY belum diatur"
 
     prompt = f"""
-    Terdeteksi penyakit bernama: {disease_name} 
+    Terdeteksi penyakit bernama: {disease_name}
     dengan tingkat deteksi penyakit {confidence:.2%}.
-    
+
     Tolong berikan analisis medis dengan format berikut:
     1. Deskripsi singkat penyakit ini
     2. Obat dan tindakan medis seperti apa
@@ -173,12 +179,13 @@ def home():
             diagnosis = f"""
             🦠 Penyakit terdeteksi: {disease_name}
             📊 Tingkat deteksi penyakit: {confidence:.2%}
-            
+
             📋 Analisis Gemini:
             {gemini_result}
             """
 
-    return render_template("index.html", diagnosis=diagnosis, image_path=image_path, user=user)
+    # [DIUBAH] Menambahkan 'today' ke konteks template
+    return render_template("index.html", diagnosis=diagnosis, image_path=image_path, user=user, today=date.today())
 
 @app.route("/register", methods=["POST"])
 @db_session
@@ -203,63 +210,97 @@ def login():
 def logout():
     session.clear()
     return redirect(url_for("home"))
+
+# --- [BARU] Route untuk Top Up ---
 @app.route("/topup", methods=["POST"])
 @db_session
 def topup():
-    """
-    Menangani permintaan top up dari pengguna.
-    """
-    # 1. Pastikan pengguna sudah login
+    # 1. Pastikan user sudah login
     if "user_id" not in session:
-        # Jika tidak login, kembalikan ke halaman utama dengan pesan error
-        return render_template("index.html", 
-                               topup_error="Anda harus login untuk melakukan top up.", 
-                               section="topup")
+        return redirect(url_for("home"))
+
+    user = User.get(UserID=session["user_id"])
+    if not user:
+        session.clear()
+        return redirect(url_for("home"))
 
     # 2. Ambil data dari form
-    user = User.get(UserID=session["user_id"])
-    jumlah_str = request.form.get("jumlah")
-    metode = request.form.get("metode")
+    try:
+        jumlah = float(request.form.get("jumlah"))
+        metode = request.form.get("metode")
+    except (ValueError, TypeError):
+        return render_template("index.html", user=user, section="topup", topup_error="Jumlah top up tidak valid.", today=date.today())
 
-    # 3. Validasi input
-    if not jumlah_str or not metode:
-        return render_template("index.html", 
-                               user=user, 
-                               topup_error="Jumlah dan metode pembayaran harus diisi.", 
-                               section="topup")
+    # 3. Tentukan aset kripto berdasarkan metode
+    #    Catatan: Luno menggunakan 'XBT' untuk Bitcoin
+    asset = "XBT" if metode == "btc" else "ETH"
+
+    topup_address = None
+    topup_error = None
 
     try:
-        jumlah = float(jumlah_str)
-        if jumlah <= 0:
-            raise ValueError("Jumlah harus positif")
-    except ValueError:
-        return render_template("index.html", 
-                               user=user, 
-                               topup_error="Jumlah yang dimasukkan tidak valid.", 
-                               section="topup")
+        # 4. Inisialisasi Luno Client dan dapatkan alamat deposit
+        if not LUNO_API_KEY_ID or not LUNO_API_KEY_SECRET or LUNO_API_KEY_ID == "YOUR_LUNO_API_KEY_ID":
+            raise Exception("Kunci API Luno belum diatur di server.")
 
-    # 4. Simulasi pembuatan alamat deposit (untuk tujuan demo)
-    # Di aplikasi nyata, ini akan memanggil API dari payment gateway crypto
-    topup_address = ""
-    if metode == "btc":
-        topup_address = f"btc_demo_address_{uuid.uuid4().hex}"
-    elif metode == "eth":
-        topup_address = f"0x_eth_demo_address_{uuid.uuid4().hex}"
-    
-    # 5. Catat transaksi topup di database
-    # PENTING: Di aplikasi nyata, saldo pengguna baru ditambahkan SETELAH 
-    # pembayaran dikonfirmasi di blockchain, biasanya melalui webhook.
-    # Untuk penyederhanaan, kita langsung tambahkan di sini.
-    TopUp(User=user, Jumlah=jumlah, Metode=metode, Tanggal=datetime.now())
-    user.Saldo += jumlah
+        client = Client(api_key_id=LUNO_API_KEY_ID, api_key_secret=LUNO_API_KEY_SECRET)
 
-    # 6. Tampilkan kembali halaman dengan alamat deposit
-    # Variabel `section="topup"` penting agar halaman tetap di tab Top Up
-    return render_template("index.html", 
-                           user=user, 
-                           topup_address=topup_address, 
-                           section="topup")
-    
+        # Coba dapatkan alamat yang sudah ada
+        funding_address = client.get_funding_address(asset=asset)
+        topup_address = funding_address.get('address')
+
+        # Jika tidak ada, buat alamat baru
+        if not topup_address:
+            new_address_info = client.create_funding_address(asset=asset)
+            topup_address = new_address_info.get('address')
+            if not topup_address:
+                raise Exception("Gagal mendapatkan atau membuat alamat deposit dari Luno.")
+
+        # 5. Simpan transaksi ke database
+        TopUp(User=user, Jumlah=jumlah, Metode=metode.upper(), Tanggal=datetime.now())
+
+    except Exception as e:
+        topup_error = f"Terjadi kesalahan saat memproses top up: {e}"
+
+    # 6. Tampilkan kembali halaman dengan hasil top up
+    return render_template("index.html",
+                           user=user,
+                           section="topup",
+                           topup_address=topup_address,
+                           topup_error=topup_error,
+                           today=date.today())
+
+# --- [BARU] Route untuk Update User ---
+@app.route("/update_user", methods=["POST"])
+@db_session
+def update_user():
+    if "user_id" not in session:
+        return "❌ Harus login dulu."
+
+    user = User.get(UserID=session["user_id"])
+    if not user:
+        return "❌ User tidak ditemukan."
+
+    nama = request.form.get("nama")
+    email = request.form.get("email")
+    old_password = request.form.get("old_password")
+    new_password = request.form.get("new_password")
+
+    if user.Password != old_password:
+        return "❌ Password lama salah."
+
+    existing_user = User.get(Email=email)
+    if existing_user and existing_user.UserID != user.UserID:
+        return "❌ Email sudah digunakan oleh akun lain."
+
+    user.NamaUser = nama
+    user.Email = email
+    if new_password: # Hanya update jika password baru diisi
+        user.Password = new_password
+
+    return redirect(url_for("home", section="dashboard"))
+
+
 @app.route("/exchange", methods=["POST"])
 @db_session
 def exchange():
