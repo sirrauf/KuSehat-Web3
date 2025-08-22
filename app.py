@@ -2,12 +2,13 @@ import os
 import uuid
 import numpy as np
 import requests
-from datetime import datetime, date
+from datetime import datetime
 from flask import Flask, render_template, request, session, redirect, url_for
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
-from pony.orm import Database, Required, Optional, PrimaryKey, Set, db_session, select
+from pony.orm import Database, Required, Optional, PrimaryKey, Set, db_session
 from luno_python.client import Client
+from PIL import Image
 
 # =========================
 # Setup
@@ -18,14 +19,8 @@ app.secret_key = os.getenv("SECRET_KEY", "change_me")
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
-ENABLE_AI = os.getenv("ENABLE_AI", "0") == "1"  # AI nonaktif default
-
-# =========================
-# Luno API
-# =========================
-LUNO_API_KEY_ID = os.getenv("LUNO_API_KEY_ID", "")
-LUNO_API_KEY_SECRET = os.getenv("LUNO_API_KEY_SECRET", "")
-luno_client = Client(api_key_id=LUNO_API_KEY_ID, api_key_secret=LUNO_API_KEY_SECRET)
+ENABLE_AI = True   # pastikan aktifkan AI
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 
 # =========================
 # Database
@@ -33,10 +28,10 @@ luno_client = Client(api_key_id=LUNO_API_KEY_ID, api_key_secret=LUNO_API_KEY_SEC
 db = Database()
 db.bind(
     provider='mysql',
-    host="localhost",      
-    user="root",           
-    passwd="",  
-    db="kusehat"           
+    host="localhost",
+    user="root",
+    passwd="",      # sesuaikan
+    db="kusehat"
 )
 
 class User(db.Entity):
@@ -72,51 +67,77 @@ class Exchange(db.Entity):
 db.generate_mapping(create_tables=False)
 
 # =========================
-# AI (lazy load)
+# AI Keras (lazy load)
 # =========================
 model = None
 class_names = []
 
-def load_ai_if_enabled():
+def load_ai_model():
     global model, class_names
-    if not ENABLE_AI or model is not None:
+    if model is not None:
         return
     try:
-        from keras.models import load_model as _load_model
+        from keras.models import load_model
         model_path = "model/keras_Model.h5"
         labels_path = "model/labels.txt"
         if not (os.path.isfile(model_path) and os.path.isfile(labels_path)):
             return
-        _model = _load_model(model_path, compile=False)
+        _model = load_model(model_path, compile=False)
         with open(labels_path, "r") as f:
             _class_names = [line.strip() for line in f]
         model, class_names = _model, _class_names
-    except Exception:
-        pass
-
-def process_image_for_detection(image_path):
-    if not ENABLE_AI:
-        return {"error": "AI detection disabled on this server."}
-    load_ai_if_enabled()
-    if model is None:
-        return {"error": "Model not available."}
-    try:
-        from PIL import Image
-        image = Image.open(image_path).convert("RGB").resize((224, 224))
-        image = np.asarray(image, dtype=np.float32).reshape(1, 224, 224, 3)
-        image = (image / 127.5) - 1
-        prediction = model.predict(image)
-        index = int(np.argmax(prediction))
-        class_name = class_names[index].strip()
-        confidence = float(prediction[0][index])
-        return {"diagnosis": f"Deteksi: {class_name} ({confidence:.2%})", "class_name": class_name}
     except Exception as e:
-        return {"error": str(e)}
+        print("Gagal load model AI:", str(e))
+
+def detect_disease(image_path):
+    """Deteksi penyakit menggunakan model AI"""
+    load_ai_model()
+    if model is None:
+        return {"class_name": "Tidak diketahui", "confidence": 0.0}
+
+    image = Image.open(image_path).convert("RGB").resize((224, 224))
+    image = np.asarray(image, dtype=np.float32).reshape(1, 224, 224, 3)
+    image = (image / 127.5) - 1
+    prediction = model.predict(image)
+    index = int(np.argmax(prediction))
+    class_name = class_names[index].strip()
+    confidence = float(prediction[0][index])
+    return {"class_name": class_name, "confidence": confidence}
+
+def analyze_with_gemini(disease_name, confidence):
+    """Analisis lanjutan menggunakan Gemini API"""
+    if not GEMINI_API_KEY:
+        return "⚠️ GEMINI_API_KEY belum diatur di .env"
+
+    prompt = f"""
+    Terdeteksi penyakit bernama: {disease_name} 
+    dengan tingkat deteksi penyakit {confidence:.2%}.
+    
+    Tolong berikan analisis medis dengan format berikut:
+    1. Deskripsi singkat penyakit ini
+    2. Obat dan tindakan medis seperti apa
+    3. Cara penyembuhan secara medis
+    4. Kapan harus ke dokter
+    """
+
+    try:
+        response = requests.post(
+            f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}",
+            json={"contents": [{"parts": [{"text": prompt}]}]},
+            headers={"Content-Type": "application/json"}
+        )
+        if response.ok:
+            data = response.json()
+            return data.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "❌ Tidak ada hasil.")
+        else:
+            return f"❌ Error Gemini: {response.text}"
+    except Exception as e:
+        return f"❌ Gagal akses Gemini: {str(e)}"
 
 # =========================
 # Routes
 # =========================
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 @db_session
 def home():
     diagnosis = ""
@@ -131,8 +152,23 @@ def home():
             filename = secure_filename(f"{uuid.uuid4().hex}_{file.filename}")
             image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(image_path)
-            result = process_image_for_detection(image_path)
-            diagnosis = result.get("diagnosis", result.get("error", ""))
+
+            # Step 1: deteksi AI
+            result = detect_disease(image_path)
+            disease_name = result["class_name"]
+            confidence = result["confidence"]
+
+            # Step 2: analisis Gemini
+            gemini_result = analyze_with_gemini(disease_name, confidence)
+
+            diagnosis = f"""
+            🦠 Penyakit terdeteksi: {disease_name}
+            📊 Tingkat kepercayaan: {confidence:.2%}
+            
+            📋 Analisis Gemini:
+            {gemini_result}
+            """
+
     return render_template("index.html", diagnosis=diagnosis, image_path=image_path, user=user)
 
 @app.route("/register", methods=["POST"])
@@ -159,8 +195,30 @@ def logout():
     session.clear()
     return redirect(url_for("home"))
 
-# =========================
-# Run (local only)
-# =========================
+@app.route("/exchange", methods=["POST"])
+@db_session
+def exchange():
+    if "user_id" not in session:
+        return "❌ Harus login dulu."
+
+    user = User.get(UserID=session["user_id"])
+    tujuan = request.form.get("tujuan")
+    file = request.files.get("image")
+    if not file:
+        return "❌ Gambar tidak ada."
+
+    filename = secure_filename(f"{uuid.uuid4().hex}_{file.filename}")
+    image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    file.save(image_path)
+
+    reward = 100000.0 if tujuan == "dokter" else 200000.0
+
+    Exchange(User=user, Tujuan=tujuan, Gambar=filename,
+             Diagnosa="Upload ke exchange",
+             Tanggal=datetime.now(), SaldoReward=reward)
+    user.Saldo += reward
+
+    return redirect(url_for("home"))
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5001, debug=True)
