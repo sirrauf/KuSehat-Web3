@@ -5,7 +5,6 @@ import requests
 from datetime import datetime
 from flask import Flask, render_template, request, session, redirect, url_for
 from werkzeug.utils import secure_filename
-from dotenv import load_dotenv
 from pony.orm import Database, Required, Optional, PrimaryKey, Set, db_session
 from luno_python.client import Client
 from PIL import Image
@@ -13,14 +12,13 @@ from PIL import Image
 # =========================
 # Setup
 # =========================
-load_dotenv()
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY", "change_me")
+app.secret_key = "change_me"
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
-ENABLE_AI = True   # pastikan aktifkan AI
-GEMINI_API_KEY = "AIzaSyDb3F5n7dHIHlz9dnUE2rMKh6kXQM8IcB4"
+ENABLE_AI = True
+GEMINI_API_KEY = "AIzaSyDb3F5n7dHIHlz9dnUE2rMKh6kXQM8IcB4"   # hardcode API Key
 
 # =========================
 # Database
@@ -30,7 +28,7 @@ db.bind(
     provider='mysql',
     host="localhost",
     user="root",
-    passwd="",      # sesuaikan
+    passwd="",        # ganti sesuai konfigurasi MySQL kamu
     db="kusehat"
 )
 
@@ -43,6 +41,7 @@ class User(db.Entity):
     Register_Date = Required(datetime)
     Login_Date = Optional(datetime)
     Saldo = Required(float, default=0.0)
+    PaketAktif = Required(bool, default=False)   # 🔑 paket seumur hidup
     topups = Set("TopUp")
     exchanges = Set("Exchange")
 
@@ -64,7 +63,7 @@ class Exchange(db.Entity):
     Tanggal = Required(datetime)
     SaldoReward = Required(float)
 
-db.generate_mapping(create_tables=False)
+db.generate_mapping(create_tables=True)
 
 # =========================
 # AI Keras (lazy load)
@@ -107,7 +106,7 @@ def detect_disease(image_path):
 def analyze_with_gemini(disease_name, confidence):
     """Analisis lanjutan menggunakan Gemini API"""
     if not GEMINI_API_KEY:
-        return "⚠️ GEMINI_API_KEY belum diatur di .env"
+        return "⚠️ GEMINI_API_KEY belum diatur"
 
     prompt = f"""
     Terdeteksi penyakit bernama: {disease_name} 
@@ -147,6 +146,16 @@ def home():
         user = User.get(UserID=session["user_id"])
 
     if request.method == "POST" and "image" in request.files:
+        if not user:
+            return "❌ Harus login dulu."
+
+        # 🔑 cek paket user
+        if not user.PaketAktif:
+            if user.Saldo < 150000:
+                return "❌ Saldo tidak cukup untuk aktivasi paket (Rp 150.000)"
+            user.Saldo -= 150000
+            user.PaketAktif = True   # aktifkan paket selamanya
+
         file = request.files["image"]
         if file and file.filename.lower().endswith((".jpg", ".jpeg", ".png")):
             filename = secure_filename(f"{uuid.uuid4().hex}_{file.filename}")
@@ -194,7 +203,63 @@ def login():
 def logout():
     session.clear()
     return redirect(url_for("home"))
+@app.route("/topup", methods=["POST"])
+@db_session
+def topup():
+    """
+    Menangani permintaan top up dari pengguna.
+    """
+    # 1. Pastikan pengguna sudah login
+    if "user_id" not in session:
+        # Jika tidak login, kembalikan ke halaman utama dengan pesan error
+        return render_template("index.html", 
+                               topup_error="Anda harus login untuk melakukan top up.", 
+                               section="topup")
 
+    # 2. Ambil data dari form
+    user = User.get(UserID=session["user_id"])
+    jumlah_str = request.form.get("jumlah")
+    metode = request.form.get("metode")
+
+    # 3. Validasi input
+    if not jumlah_str or not metode:
+        return render_template("index.html", 
+                               user=user, 
+                               topup_error="Jumlah dan metode pembayaran harus diisi.", 
+                               section="topup")
+
+    try:
+        jumlah = float(jumlah_str)
+        if jumlah <= 0:
+            raise ValueError("Jumlah harus positif")
+    except ValueError:
+        return render_template("index.html", 
+                               user=user, 
+                               topup_error="Jumlah yang dimasukkan tidak valid.", 
+                               section="topup")
+
+    # 4. Simulasi pembuatan alamat deposit (untuk tujuan demo)
+    # Di aplikasi nyata, ini akan memanggil API dari payment gateway crypto
+    topup_address = ""
+    if metode == "btc":
+        topup_address = f"btc_demo_address_{uuid.uuid4().hex}"
+    elif metode == "eth":
+        topup_address = f"0x_eth_demo_address_{uuid.uuid4().hex}"
+    
+    # 5. Catat transaksi topup di database
+    # PENTING: Di aplikasi nyata, saldo pengguna baru ditambahkan SETELAH 
+    # pembayaran dikonfirmasi di blockchain, biasanya melalui webhook.
+    # Untuk penyederhanaan, kita langsung tambahkan di sini.
+    TopUp(User=user, Jumlah=jumlah, Metode=metode, Tanggal=datetime.now())
+    user.Saldo += jumlah
+
+    # 6. Tampilkan kembali halaman dengan alamat deposit
+    # Variabel `section="topup"` penting agar halaman tetap di tab Top Up
+    return render_template("index.html", 
+                           user=user, 
+                           topup_address=topup_address, 
+                           section="topup")
+    
 @app.route("/exchange", methods=["POST"])
 @db_session
 def exchange():
