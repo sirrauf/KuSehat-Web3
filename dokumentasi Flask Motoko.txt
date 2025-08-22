@@ -18,6 +18,8 @@ Email:
 sutris@gmail.com
 Password:
 pass123?
+
+
 Cara jalanlan script API Motoko:
 
 1. Copy Paste folder KuSehat-Web3-Motoko kedalam folder WSL Ubuntu home/namakamu contoh home/rauf
