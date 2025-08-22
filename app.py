@@ -20,7 +20,7 @@ app.config['UPLOAD_FOLDER'] = 'static/uploads'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 ENABLE_AI = True   # pastikan aktifkan AI
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+GEMINI_API_KEY = "AIzaSyDb3F5n7dHIHlz9dnUE2rMKh6kXQM8IcB4"
 
 # =========================
 # Database
@@ -163,7 +163,7 @@ def home():
 
             diagnosis = f"""
             🦠 Penyakit terdeteksi: {disease_name}
-            📊 Tingkat kepercayaan: {confidence:.2%}
+            📊 Tingkat deteksi penyakit: {confidence:.2%}
             
             📋 Analisis Gemini:
             {gemini_result}
