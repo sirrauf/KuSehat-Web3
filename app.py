@@ -1,23 +1,43 @@
 import os
 import uuid
-import cv2
 import numpy as np
 import requests
 from datetime import datetime, date
 from flask import Flask, render_template, request, session, redirect, url_for
 from werkzeug.utils import secure_filename
-from keras.models import load_model
+from dotenv import load_dotenv
 from pony.orm import Database, Required, Optional, PrimaryKey, Set, db_session, select
 from luno_python.client import Client
 
-# Luno API Setup
-LUNO_API_KEY_ID = "jnm42w8w23t8v"
-LUNO_API_KEY_SECRET = "QSRtcDAysoiAs3IiRrDtqaXeO35SPzFMXU0niYUHNnc"
+# =========================
+# Setup
+# =========================
+load_dotenv()
+app = Flask(__name__)
+app.secret_key = os.getenv("SECRET_KEY", "change_me")
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+ENABLE_AI = os.getenv("ENABLE_AI", "0") == "1"  # AI nonaktif default
+
+# =========================
+# Luno API
+# =========================
+LUNO_API_KEY_ID = os.getenv("LUNO_API_KEY_ID", "")
+LUNO_API_KEY_SECRET = os.getenv("LUNO_API_KEY_SECRET", "")
 luno_client = Client(api_key_id=LUNO_API_KEY_ID, api_key_secret=LUNO_API_KEY_SECRET)
 
-# Database Setup
+# =========================
+# Database
+# =========================
 db = Database()
-db.bind(provider='mysql', host='localhost', user='root', passwd='', db='kusehat')
+db.bind(
+    provider='mysql',
+    host="localhost",      
+    user="root",           
+    passwd="",  
+    db="kusehat"           
+)
 
 class User(db.Entity):
     _table_ = "user"
@@ -49,125 +69,98 @@ class Exchange(db.Entity):
     Tanggal = Required(datetime)
     SaldoReward = Required(float)
 
-db.generate_mapping(create_tables=True)
+db.generate_mapping(create_tables=False)
 
-app = Flask(__name__)
-app.secret_key = 'rahasia_kusehat'
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+# =========================
+# AI (lazy load)
+# =========================
+model = None
+class_names = []
 
-# Memuat Model dan Label (dilakukan sekali saat aplikasi dimulai)
-try:
-    model = load_model("model/keras_Model.h5", compile=False)
-    with open("model/labels.txt", "r") as f:
-        class_names = [line.strip() for line in f.readlines()]
-except Exception as e:
-    print(f"Error loading model or labels: {e}")
-    model = None
-    class_names = []
-
-# Gemini Setup
-GEMINI_API_KEY = "AIzaSyDwniC_zbYaVpRWRGjGk9HnhJWAe9IPZGM"
-GEMINI_API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
-
-def get_gemini_explanation(disease_name):
-     prompt = (
-        f"Tolong jelaskan informasi tentang penyakit kulit berikut ini dalam format HTML yang rapi:\n\n"
-        f"Nama penyakit: {disease_name}\n\n"
-        f"1. Deskripsi singkat tentang penyakit ini\n2. Gejala dan Penyebab\n3. Cara pengobatan harus apa\n4. Rekomendasi Obat\n5.Kapan harus ke dokter\n6.Apakah penyakit ini perlu dioperasi?"
-    )
-    headers = {"Content-Type": "application/json"}
-    payload = {"contents": [{"parts": [{"text": prompt}]}]}
-
+def load_ai_if_enabled():
+    global model, class_names
+    if not ENABLE_AI or model is not None:
+        return
     try:
-        response = requests.post(GEMINI_API_URL, json=payload, headers=headers, timeout=15)
-        response.raise_for_status()
-        data = response.json()
-
-        candidates = data.get("candidates", [])
-        if candidates and "content" in candidates[0]:
-            parts = candidates[0]["content"].get("parts", [])
-            if parts and "text" in parts[0]:
-                return parts[0]["text"]
-
-        return "⚠️ Tidak ada penjelasan yang diberikan Gemini."
+        from keras.models import load_model as _load_model
+        model_path = "model/keras_Model.h5"
+        labels_path = "model/labels.txt"
+        if not (os.path.isfile(model_path) and os.path.isfile(labels_path)):
+            return
+        _model = _load_model(model_path, compile=False)
+        with open(labels_path, "r") as f:
+            _class_names = [line.strip() for line in f]
+        model, class_names = _model, _class_names
     except Exception:
-        # fallback singkat, tanpa detail error teknis
-        return "⚠️ Layanan AI sedang sibuk, silakan coba lagi nanti."
+        pass
 
 def process_image_for_detection(image_path):
+    if not ENABLE_AI:
+        return {"error": "AI detection disabled on this server."}
+    load_ai_if_enabled()
+    if model is None:
+        return {"error": "Model not available."}
     try:
-        image = cv2.imread(image_path)
-        if image is None:
-            return {"error": "Gagal membaca file gambar."}
-        
-        image = cv2.resize(image, (224, 224))
+        from PIL import Image
+        image = Image.open(image_path).convert("RGB").resize((224, 224))
         image = np.asarray(image, dtype=np.float32).reshape(1, 224, 224, 3)
         image = (image / 127.5) - 1
-
         prediction = model.predict(image)
-        index = np.argmax(prediction)
+        index = int(np.argmax(prediction))
         class_name = class_names[index].strip()
         confidence = float(prediction[0][index])
-
-        gemini_info = get_gemini_explanation(class_name)
-
-        diagnosis = (
-            f"📤 <b>Deteksi Upload:</b> <b>{class_name}</b><br>"
-            f"🧪 <b>Kepercayaan:</b> {confidence:.2%}<br><br>"
-            f"🧠 <b>Penjelasan Gemini AI:</b><br>{gemini_info}"
-        )
-        return {"diagnosis": diagnosis, "class_name": class_name}
+        return {"diagnosis": f"Deteksi: {class_name} ({confidence:.2%})", "class_name": class_name}
     except Exception as e:
-        return {"error": f"❌ Terjadi kesalahan saat proses AI: {e}"}
+        return {"error": str(e)}
 
-@app.route("/", methods=["GET", "POST"])
+# =========================
+# Routes
+# =========================
+@app.route("/")
 @db_session
 def home():
     diagnosis = ""
     image_path = ""
     user = None
-
     if "user_id" in session:
         user = User.get(UserID=session["user_id"])
 
     if request.method == "POST" and "image" in request.files:
-        if not user:
-            return redirect(url_for("home"))
-
-        today = date.today()
-        upload_count = select(e for e in Exchange if e.User == user and e.Tanggal.date() == today and e.Tujuan == "deteksi").count()
-
-        if upload_count >= 3:
-            if user.Saldo >= 150000:
-                user.Saldo -= 150000
-                upload_count = 0
-            else:
-                return redirect(url_for("topup_page"))
-
-        file = request.files.get("image")
-        if not file or file.filename == "":
-            diagnosis = "❌ Gambar tidak ditemukan."
-        elif not file.filename.lower().endswith((".jpg", ".jpeg", ".png")):
-            diagnosis = "❌ Format file tidak didukung. Gunakan JPG, JPEG, atau PNG."
-        else:
+        file = request.files["image"]
+        if file and file.filename.lower().endswith((".jpg", ".jpeg", ".png")):
             filename = secure_filename(f"{uuid.uuid4().hex}_{file.filename}")
             image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(image_path)
-            
             result = process_image_for_detection(image_path)
-            if "error" in result:
-                diagnosis = result["error"]
-            else:
-                diagnosis = result["diagnosis"]
-                class_name = result["class_name"]
-                Exchange(User=user, Tujuan="deteksi", Gambar=filename, Diagnosa=class_name, Tanggal=datetime.now(), SaldoReward=0.0)
+            diagnosis = result.get("diagnosis", result.get("error", ""))
+    return render_template("index.html", diagnosis=diagnosis, image_path=image_path, user=user)
 
-    return render_template("index.html", diagnosis=diagnosis, image_path=image_path,
-                           user=user, topup_address="", topup_error="", section="dashboard", today=date.today())
+@app.route("/register", methods=["POST"])
+@db_session
+def register():
+    nama, email, password = request.form.get("nama"), request.form.get("email"), request.form.get("password")
+    if User.get(Email=email):
+        return "❌ Email sudah terdaftar."
+    User(NamaUser=nama, Email=email, Password=password, Register_Date=datetime.now())
+    return "✅ Registrasi berhasil"
 
-# ✅ sisanya (register, login, dashboard, topup, exchange, logout) tetap sama seperti sebelumnya
-# Tidak diubah karena masalah utama hanya di fungsi get_gemini_explanation
+@app.route("/login", methods=["POST"])
+@db_session
+def login():
+    email, password = request.form.get("email"), request.form.get("password")
+    user = User.get(Email=email, Password=password)
+    if user:
+        session["user_id"] = user.UserID
+        return redirect(url_for("home"))
+    return "❌ Email/Password salah"
 
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("home"))
+
+# =========================
+# Run (local only)
+# =========================
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5001, debug=True)
