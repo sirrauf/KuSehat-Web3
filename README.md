@@ -25,6 +25,9 @@ Anggota tim:
 4. Unggar Madi sebagai Design UI UX tim.
 
 [Video Demo Website KuSehat Web3](https://www.youtube.com/watch?v=fVP2rikjsac)
+[Pitch Video PPT KuSehat](https://www.youtube.com/live/x_Rjs1gGzd4?si=iSnijhYdb2ioYbvm)
+
+
 
 # Apa saja yang dibutuhkan:
 1. [Python Version 3.10.11](https://www.python.org/downloads/release/python-31011/)
