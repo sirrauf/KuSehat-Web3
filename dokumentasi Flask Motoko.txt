@@ -22,9 +22,10 @@ pass123?
 
 Cara jalanlan script API Motoko:
 
-1. Copy Paste folder KuSehat-Web3-Motoko kedalam folder WSL Ubuntu home/namakamu contoh home/rauf
+1. Copy Paste folder kusehat_ic kedalam folder WSL Ubuntu home/namakamu contoh home/rauf
 2. Sebelum jalankan Website KuSehat di Motoko,harus install Motoko dan WSL Ubuntu terlebih dahulu: https://internetcomputer.org/docs/motoko/install.
 
-3. Jalankan website didalam folder KuSehat-Web3-Motoko, dengan ketik di Ubuntu: dfx start --clean --background kemudian ketik dfx deploy.
+3. Jalankan website didalam folder kusehat_ic, dengan ketik di WSL Ubuntu: dfx start --clean --background kemudian ketik dfx deploy.
+
 
 
