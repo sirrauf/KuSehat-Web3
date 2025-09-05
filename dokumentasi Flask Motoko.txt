@@ -9,7 +9,7 @@ Cara jalanakan script API Flask:
 4. Buat database di laragon,kemudian buka file mysql yaitu data.sql, buat database kusehat_api kemudian copy paste kan ke query sql laragon,kemudia eksekusi query sql tersebut dengan tekan F9 atau klik icon play warna biru.
 5. Jalankan web server dengan cara python app.py.
 
-Endpoint untuk Luno: http://localhost:8000/luno
+Endpoint untuk Luno: http://127.0.0.1:8000/api/luno
 Endpoint untuk API KuSehat: http://localhost:8000/
 Endpoint untuk API Login: http://localhost:8000/auth/login
 
@@ -26,6 +26,7 @@ Cara jalanlan script API Motoko:
 2. Sebelum jalankan Website KuSehat di Motoko,harus install Motoko dan WSL Ubuntu terlebih dahulu: https://internetcomputer.org/docs/motoko/install.
 
 3. Jalankan website didalam folder kusehat_ic, dengan ketik di WSL Ubuntu: dfx start --clean --background kemudian ketik dfx deploy.
+
 
 
 
