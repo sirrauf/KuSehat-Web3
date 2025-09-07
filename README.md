@@ -27,7 +27,9 @@ Anggota tim:
 [Video Demo Website KuSehat Web3](https://www.youtube.com/watch?v=fVP2rikjsac)
 [Pitch Video PPT KuSehat](https://www.youtube.com/live/x_Rjs1gGzd4?si=iSnijhYdb2ioYbvm)
 
-
+# Untuk dataset training dan validasi:
+1. [Kunjungi website Teachacle Machine](https://teachablemachine.withgoogle.com/)
+2. Kemudian Klik Open Existing Project File di Teachble Machine,kemudian file extensi .tm.
 
 # Apa saja yang dibutuhkan:
 1. [Python Version 3.10.11](https://www.python.org/downloads/release/python-31011/)
