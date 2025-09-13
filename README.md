@@ -51,7 +51,7 @@ Anggota tim:
 8. [Download Laragon](https://github.com/leokhoa/laragon/releases/download/6.0.0/laragon-wamp.exe)
 9. Install Laragon dan buat database kusehat di laragon.
 10. Jalankan website KuSehat Python: ketik python app.py
-11. Untuk jalankan Website API Flask dan Website API Motoko, [Buka file Dokumentasi](https://raw.githubusercontent.com/sirrauf/KuSehat-Web3/refs/heads/main/dokumentasi%20Flask%20Motoko.txt).
+11. Untuk jalankan Website API Flask dan Website API Motoko, [Buka file Dokumentasi](https://raw.githubusercontent.com/sirrauf/KuSehat-Web3/refs/heads/main/dokumentasi%20cara%20gunakan%20API%20KuSehat%20Flask%20dan%20API%20KuSehat%20Motoko.txt).
 12. Cara untuk deploy proyek KuSehat ke AWS Cloud EC2,[Buka file Dokumentasi](https://raw.githubusercontent.com/sirrauf/KuSehat-Web3/refs/heads/main/Dokumentasi%20deploy%20KuSehat%20ke%20AWS%20Cloud%20EC2.txt)
 13. Selesai
 
