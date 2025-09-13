@@ -33,7 +33,10 @@ nvm use 20,setelah itu npm install, dan npm run build.
 
 5. Jalankan API Motoko KuSehat didalam folder API-Motoko-KuSehat, dengan ketik di WSL Ubuntu: dfx start --clean --background kemudian ketik dfx deploy.
 
-6. Jalankan API Motoko KuSehat didalam folder API-Motoko-KuSehat, dengan ketik di WSL Ubuntu: dfx build kusehat_ic_backend,dfx canister create --all,dan ketik: dfx canister install kusehat_ic_backend --mode=reinstall
+Apabila cuman ingin deploy Backend Motokonya saja:
+
+1. Jalankan API Motoko KuSehat didalam folder API-Motoko-KuSehat, dengan ketik di WSL Ubuntu: dfx build kusehat_ic_backend,dfx canister create --all,dan ketik: dfx canister install kusehat_ic_backend --mode=reinstall
+
 
 
 
