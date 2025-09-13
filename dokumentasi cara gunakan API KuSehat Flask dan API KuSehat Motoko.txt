@@ -22,16 +22,17 @@ pass123?
 
 Cara jalanlan script API Motoko:
 
-1. Extract file KuSehat-Web3-Motoko kedalam folder baru
+1. Extract file rar API-Motoko-KuSehat kedalam folder baru  bernama API-Motoko-KuSehat
 
-2. Copy Paste folder KuSehat-Web3-Motoko kedalam folder WSL Ubuntu home/namakamu contoh home/rauf
+2. Copy Paste folder API-Motoko-KuSehat kedalam folder WSL Ubuntu home/namakamu contoh home/rauf
 
-3. Sebelum jalankan API KuSehat di Motoko,harus install frontend terlebih dahulu di path folder KuSehat-Web3-Motoko/src/kusehat_ic_frontend ketik: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash, source ~/.bashrc,nvm install 20
+3. Sebelum jalankan API KuSehat di Motoko,harus install frontend terlebih dahulu di path folder API-Motoko-KuSehat/src/kusehat_ic_frontend ketik: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash, source ~/.bashrc,nvm install 20
 nvm use 20,setelah itu npm install, dan npm run build.
 
 4. Sebelum jalankan API KuSehat di Motoko,harus install Motoko dan WSL Ubuntu terlebih dahulu: https://internetcomputer.org/docs/motoko/install.
 
 5. Jalankan website didalam folder KuSehat-Web3-Motoko, dengan ketik di WSL Ubuntu: dfx start --clean --background kemudian ketik dfx deploy.
+
 
 
 
