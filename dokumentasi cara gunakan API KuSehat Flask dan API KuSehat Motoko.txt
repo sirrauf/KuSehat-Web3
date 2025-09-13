@@ -4,8 +4,8 @@ Cara Jalankan script API Flask dan API Motoko.
 Cara jalankan script API Flask KuSehat:
 
 1. Download file rar API-Flask-KuSehat
-2. Extrak file kedalam folder baru yaitu KuSehat-API
-3. Masuk kedalam folder KuSehat-API,kemudian pip install -r requirements.txt
+2. Extrak file kedalam folder baru yaitu API-Flask-KuSehat
+3. Masuk kedalam folder API-Flask-KuSehat,kemudian pip install -r requirements.txt
 4. Buat database di laragon,kemudian buka file mysql yaitu data.sql, buat database kusehat_api kemudian copy paste kan ke query sql laragon,kemudia eksekusi query sql tersebut dengan tekan F9 atau klik icon play warna biru.
 5. Jalankan web server dengan cara python app.py.
 
@@ -39,6 +39,7 @@ nvm use 20,setelah itu npm install, dan npm run build.
 Apabila cuman ingin deploy Backend Motokonya saja:
 
 1. Jalankan API Motoko KuSehat didalam folder API-Motoko-KuSehat, dengan ketik di WSL Ubuntu: dfx build kusehat_ic_backend,dfx canister create --all,dan ketik: dfx canister install kusehat_ic_backend --mode=reinstall
+
 
 
 
