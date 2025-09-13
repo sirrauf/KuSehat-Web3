@@ -31,7 +31,10 @@ nvm use 20,setelah itu npm install, dan npm run build.
 
 4. Sebelum jalankan API KuSehat di Motoko,harus install Motoko dan WSL Ubuntu terlebih dahulu: https://internetcomputer.org/docs/motoko/install.
 
-5. Jalankan website didalam folder KuSehat-Web3-Motoko, dengan ketik di WSL Ubuntu: dfx start --clean --background kemudian ketik dfx deploy.
+5. Jalankan API Motoko KuSehat didalam folder API-Motoko-KuSehat, dengan ketik di WSL Ubuntu: dfx start --clean --background kemudian ketik dfx deploy.
+
+6. Jalankan API Motoko KuSehat didalam folder API-Motoko-KuSehat, dengan ketik di WSL Ubuntu: dfx build kusehat_ic_backend,dfx canister create --all,dan ketik: dfx canister install kusehat_ic_backend --mode=reinstall
+
 
 
 
