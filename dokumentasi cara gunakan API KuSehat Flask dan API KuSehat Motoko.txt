@@ -26,16 +26,20 @@ Cara jalanlan script API Motoko:
 
 2. Copy Paste folder API-Motoko-KuSehat kedalam folder WSL Ubuntu home/namakamu contoh home/rauf
 
-3. Sebelum jalankan API KuSehat di Motoko,harus install frontend terlebih dahulu di path folder API-Motoko-KuSehat/src/kusehat_ic_frontend ketik: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash, source ~/.bashrc,nvm install 20
+
+3. Sebelum jalankan API KuSehat di Motoko,harus install Motoko dan WSL Ubuntu terlebih dahulu: https://internetcomputer.org/docs/motoko/install.
+
+
+4. Sebelum jalankan API KuSehat di Motoko,harus install frontend terlebih dahulu di path folder API-Motoko-KuSehat/src/kusehat_ic_frontend ketik: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash, source ~/.bashrc,nvm install 20
 nvm use 20,setelah itu npm install, dan npm run build.
 
-4. Sebelum jalankan API KuSehat di Motoko,harus install Motoko dan WSL Ubuntu terlebih dahulu: https://internetcomputer.org/docs/motoko/install.
 
 5. Jalankan API Motoko KuSehat didalam folder API-Motoko-KuSehat, dengan ketik di WSL Ubuntu: dfx start --clean --background kemudian ketik dfx deploy.
 
 Apabila cuman ingin deploy Backend Motokonya saja:
 
 1. Jalankan API Motoko KuSehat didalam folder API-Motoko-KuSehat, dengan ketik di WSL Ubuntu: dfx build kusehat_ic_backend,dfx canister create --all,dan ketik: dfx canister install kusehat_ic_backend --mode=reinstall
+
 
 
 
